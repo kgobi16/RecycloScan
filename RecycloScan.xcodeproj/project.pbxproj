@@ -1,0 +1,555 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		F22FB4C02E97C6B7007B6ED7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F22FB4AA2E97C6B6007B6ED7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F22FB4B12E97C6B6007B6ED7;
+			remoteInfo = RecycloScan;
+		};
+		F22FB4CA2E97C6B7007B6ED7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F22FB4AA2E97C6B6007B6ED7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F22FB4B12E97C6B6007B6ED7;
+			remoteInfo = RecycloScan;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F22FB4B22E97C6B6007B6ED7 /* RecycloScan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecycloScan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F22FB4BF2E97C6B7007B6ED7 /* RecycloScanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecycloScanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F22FB4C92E97C6B7007B6ED7 /* RecycloScanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecycloScanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F22FB4B42E97C6B6007B6ED7 /* RecycloScan */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RecycloScan;
+			sourceTree = "<group>";
+		};
+		F22FB4C22E97C6B7007B6ED7 /* RecycloScanTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RecycloScanTests;
+			sourceTree = "<group>";
+		};
+		F22FB4CC2E97C6B7007B6ED7 /* RecycloScanUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RecycloScanUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F22FB4AF2E97C6B6007B6ED7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F22FB4BC2E97C6B7007B6ED7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F22FB4C62E97C6B7007B6ED7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F22FB4A92E97C6B6007B6ED7 = {
+			isa = PBXGroup;
+			children = (
+				F22FB4B42E97C6B6007B6ED7 /* RecycloScan */,
+				F22FB4C22E97C6B7007B6ED7 /* RecycloScanTests */,
+				F22FB4CC2E97C6B7007B6ED7 /* RecycloScanUITests */,
+				F22FB4B32E97C6B6007B6ED7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F22FB4B32E97C6B6007B6ED7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F22FB4B22E97C6B6007B6ED7 /* RecycloScan.app */,
+				F22FB4BF2E97C6B7007B6ED7 /* RecycloScanTests.xctest */,
+				F22FB4C92E97C6B7007B6ED7 /* RecycloScanUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F22FB4B12E97C6B6007B6ED7 /* RecycloScan */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F22FB4D32E97C6B7007B6ED7 /* Build configuration list for PBXNativeTarget "RecycloScan" */;
+			buildPhases = (
+				F22FB4AE2E97C6B6007B6ED7 /* Sources */,
+				F22FB4AF2E97C6B6007B6ED7 /* Frameworks */,
+				F22FB4B02E97C6B6007B6ED7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F22FB4B42E97C6B6007B6ED7 /* RecycloScan */,
+			);
+			name = RecycloScan;
+			packageProductDependencies = (
+			);
+			productName = RecycloScan;
+			productReference = F22FB4B22E97C6B6007B6ED7 /* RecycloScan.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F22FB4BE2E97C6B7007B6ED7 /* RecycloScanTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F22FB4D62E97C6B7007B6ED7 /* Build configuration list for PBXNativeTarget "RecycloScanTests" */;
+			buildPhases = (
+				F22FB4BB2E97C6B7007B6ED7 /* Sources */,
+				F22FB4BC2E97C6B7007B6ED7 /* Frameworks */,
+				F22FB4BD2E97C6B7007B6ED7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F22FB4C12E97C6B7007B6ED7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F22FB4C22E97C6B7007B6ED7 /* RecycloScanTests */,
+			);
+			name = RecycloScanTests;
+			packageProductDependencies = (
+			);
+			productName = RecycloScanTests;
+			productReference = F22FB4BF2E97C6B7007B6ED7 /* RecycloScanTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F22FB4C82E97C6B7007B6ED7 /* RecycloScanUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F22FB4D92E97C6B7007B6ED7 /* Build configuration list for PBXNativeTarget "RecycloScanUITests" */;
+			buildPhases = (
+				F22FB4C52E97C6B7007B6ED7 /* Sources */,
+				F22FB4C62E97C6B7007B6ED7 /* Frameworks */,
+				F22FB4C72E97C6B7007B6ED7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F22FB4CB2E97C6B7007B6ED7 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F22FB4CC2E97C6B7007B6ED7 /* RecycloScanUITests */,
+			);
+			name = RecycloScanUITests;
+			packageProductDependencies = (
+			);
+			productName = RecycloScanUITests;
+			productReference = F22FB4C92E97C6B7007B6ED7 /* RecycloScanUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F22FB4AA2E97C6B6007B6ED7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					F22FB4B12E97C6B6007B6ED7 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					F22FB4BE2E97C6B7007B6ED7 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = F22FB4B12E97C6B6007B6ED7;
+					};
+					F22FB4C82E97C6B7007B6ED7 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = F22FB4B12E97C6B6007B6ED7;
+					};
+				};
+			};
+			buildConfigurationList = F22FB4AD2E97C6B6007B6ED7 /* Build configuration list for PBXProject "RecycloScan" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F22FB4A92E97C6B6007B6ED7;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F22FB4B32E97C6B6007B6ED7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F22FB4B12E97C6B6007B6ED7 /* RecycloScan */,
+				F22FB4BE2E97C6B7007B6ED7 /* RecycloScanTests */,
+				F22FB4C82E97C6B7007B6ED7 /* RecycloScanUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F22FB4B02E97C6B6007B6ED7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F22FB4BD2E97C6B7007B6ED7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F22FB4C72E97C6B7007B6ED7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F22FB4AE2E97C6B6007B6ED7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F22FB4BB2E97C6B7007B6ED7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F22FB4C52E97C6B7007B6ED7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F22FB4C12E97C6B7007B6ED7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F22FB4B12E97C6B6007B6ED7 /* RecycloScan */;
+			targetProxy = F22FB4C02E97C6B7007B6ED7 /* PBXContainerItemProxy */;
+		};
+		F22FB4CB2E97C6B7007B6ED7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F22FB4B12E97C6B6007B6ED7 /* RecycloScan */;
+			targetProxy = F22FB4CA2E97C6B7007B6ED7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F22FB4D12E97C6B7007B6ED7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F22FB4D22E97C6B7007B6ED7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F22FB4D42E97C6B7007B6ED7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScan;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F22FB4D52E97C6B7007B6ED7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScan;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F22FB4D72E97C6B7007B6ED7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScanTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RecycloScan.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RecycloScan";
+			};
+			name = Debug;
+		};
+		F22FB4D82E97C6B7007B6ED7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScanTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RecycloScan.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RecycloScan";
+			};
+			name = Release;
+		};
+		F22FB4DA2E97C6B7007B6ED7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScanUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = RecycloScan;
+			};
+			name = Debug;
+		};
+		F22FB4DB2E97C6B7007B6ED7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScanUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = RecycloScan;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F22FB4AD2E97C6B6007B6ED7 /* Build configuration list for PBXProject "RecycloScan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F22FB4D12E97C6B7007B6ED7 /* Debug */,
+				F22FB4D22E97C6B7007B6ED7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F22FB4D32E97C6B7007B6ED7 /* Build configuration list for PBXNativeTarget "RecycloScan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F22FB4D42E97C6B7007B6ED7 /* Debug */,
+				F22FB4D52E97C6B7007B6ED7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F22FB4D62E97C6B7007B6ED7 /* Build configuration list for PBXNativeTarget "RecycloScanTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F22FB4D72E97C6B7007B6ED7 /* Debug */,
+				F22FB4D82E97C6B7007B6ED7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F22FB4D92E97C6B7007B6ED7 /* Build configuration list for PBXNativeTarget "RecycloScanUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F22FB4DA2E97C6B7007B6ED7 /* Debug */,
+				F22FB4DB2E97C6B7007B6ED7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F22FB4AA2E97C6B6007B6ED7 /* Project object */;
+}

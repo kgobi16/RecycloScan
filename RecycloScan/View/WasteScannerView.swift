@@ -13,7 +13,11 @@ struct WasteScannerView: View {
     @State private var isScanning = false
     
     var body: some View {
-        VStack(spacing: 20) {
+        ZStack {
+            Color.backgroundBeige
+                .ignoresSafeArea()
+            
+            VStack(spacing: 20) {
             // Header with instructions
             VStack(spacing: 12) {
                 Text("Scan Your Waste")
@@ -33,7 +37,7 @@ struct WasteScannerView: View {
                     .frame(height: 400)
                     .overlay(
                         RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.grassGreen.opacity(0.3), lineWidth: 10)
+                            .stroke(Color.forestGreen, lineWidth: 5)
                     )
                 
                 if cameraManager.permissionGranted {
@@ -72,7 +76,7 @@ struct WasteScannerView: View {
                 // Scanning overlay
                 if isScanning {
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.forestGreen, lineWidth: 3)
+                        .stroke(Color.GrassGreen, lineWidth: 3)
                         .animation(.easeInOut(duration: 1).repeatForever(), value: isScanning)
                 }
             }
@@ -104,6 +108,7 @@ struct WasteScannerView: View {
         }
         .onDisappear {
             cameraManager.stopSession()
+        }
         }
     }
 }

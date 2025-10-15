@@ -39,6 +39,15 @@ extension Color {
     static let CompostOrange = Color("CompostOrange")    // For organic/compost
     static let LandfillGray = Color("LandfillGray")      // For landfill items
     
+    // Bin Collection Colors
+    // Colors matching actual municipal bin colors for pickup scheduling
+   
+    static let BinRed = Color("BinRed")                  // General waste/garbage
+    static let BinYellow = Color("BinYellow")            // Mixed container recycling
+    static let BinBlue = Color("BinBlue")                // Paper & cardboard
+    static let BinGreen = Color("BinGreen")              // Vegetation/garden waste
+   
+    
     // Gradient Sets
     
     /// Main hero gradient for headers and featured content
@@ -103,6 +112,22 @@ struct ColorTheme_Previews: PreviewProvider {
                     ColorSwatch(color: .EWasteRed, name: "E-Waste Red", hex: "For Electronics")
                     ColorSwatch(color: .CompostOrange, name: "Compost Orange", hex: "For Organic")
                     ColorSwatch(color: .LandfillGray, name: "Landfill Gray", hex: "For Landfill")
+                }
+                
+                Divider()
+                    .padding(.vertical)
+                
+                // Bin Collection Colors
+                Group {
+                    Text("Bin Collection Colors")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                    
+                    ColorSwatch(color: .BinRed, name: "Red Bin", hex: "General Waste")
+                    ColorSwatch(color: .BinYellow, name: "Yellow Bin", hex: "Mixed Containers")
+                    ColorSwatch(color: .BinBlue, name: "Blue Bin", hex: "Paper & Cardboard")
+                    ColorSwatch(color: .BinGreen, name: "Green Bin", hex: "Garden Waste")
                 }
                 
                 Divider()

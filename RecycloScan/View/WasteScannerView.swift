@@ -11,6 +11,7 @@ import AVFoundation
 struct WasteScannerView: View {
     @StateObject private var cameraManager = CameraManager()
     @State private var isScanning = false
+    @State private var showWasteTypeView = false
     
     var body: some View {
         ZStack {
@@ -73,32 +74,27 @@ struct WasteScannerView: View {
                     }
                 }
                 
-                // Scanning overlay
-                if isScanning {
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.GrassGreen, lineWidth: 3)
-                        .animation(.easeInOut(duration: 1).repeatForever(), value: isScanning)
-                }
             }
             .padding(.horizontal)
             
             // Analyze button
             Button(action: {
-                // Start/stop analysis
-                withAnimation {
-                    isScanning.toggle()
+                // Capture photo and show waste scanner type view
+                cameraManager.capturePhoto()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    showWasteTypeView = true
                 }
             }) {
                 HStack {
-                    Image(systemName: isScanning ? "stop.circle.fill" : "play.circle.fill")
+                    Image(systemName: "camera.fill")
                         .font(.title2)
-                    Text(isScanning ? "Stop" : "Scan")
+                    Text("Capture")
                         .font(.headline)
                 }
                 .foregroundColor(.white)
                 .padding(.horizontal, 30)
                 .padding(.vertical, 15)
-                .background(isScanning ? Color.grassGreen : Color.forestGreen)
+                .background(Color.forestGreen)
                 .clipShape(Capsule())
             }
             .padding(.bottom)
@@ -108,6 +104,14 @@ struct WasteScannerView: View {
         }
         .onDisappear {
             cameraManager.stopSession()
+        }
+        .fullScreenCover(isPresented: $showWasteTypeView) {
+            if let capturedImage = cameraManager.capturedImage {
+                WasteScannerTypeView(
+                    capturedImage: capturedImage,
+                    isPresented: $showWasteTypeView
+                )
+            }
         }
         }
     }
@@ -139,10 +143,12 @@ struct CameraPreviewView: UIViewRepresentable {
 class CameraManager: NSObject, ObservableObject {
     @Published var isSessionRunning = false
     @Published var permissionGranted = false
+    @Published var capturedImage: UIImage?
     
     let captureSession = AVCaptureSession()
     private let sessionQueue = DispatchQueue(label: "camera.session.queue")
     private var videoDeviceInput: AVCaptureDeviceInput?
+    private var photoOutput = AVCapturePhotoOutput()
     
     override init() {
         super.init()
@@ -199,6 +205,12 @@ class CameraManager: NSObject, ObservableObject {
                 print("Error setting up camera: \(error)")
             }
             
+            // Add photo output for capturing images
+            if self.captureSession.canAddOutput(self.photoOutput) {
+                self.captureSession.addOutput(self.photoOutput)
+                print("Photo output added successfully")
+            }
+            
             // Set video orientation for portrait
             if let connection = self.captureSession.connections.first {
                 if #available(iOS 17.0, *) {
@@ -246,6 +258,34 @@ class CameraManager: NSObject, ObservableObject {
             DispatchQueue.main.async {
                 self?.isSessionRunning = false
             }
+        }
+    }
+    
+    func capturePhoto() {
+        guard isSessionRunning else { return }
+        
+        let settings = AVCapturePhotoSettings()
+        photoOutput.capturePhoto(with: settings, delegate: self)
+    }
+}
+
+// Photo capture delegate
+extension CameraManager: AVCapturePhotoCaptureDelegate {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        if let error = error {
+            print("Error capturing photo: \(error)")
+            return
+        }
+        
+        guard let imageData = photo.fileDataRepresentation(),
+              let image = UIImage(data: imageData) else {
+            print("Failed to create image from photo data")
+            return
+        }
+        
+        DispatchQueue.main.async {
+            self.capturedImage = image
+            print("Photo captured successfully")
         }
     }
 }

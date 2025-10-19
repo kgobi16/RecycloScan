@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "5A65611B-48C3-4EEB-8D08-C552E744BA39"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8CF06DEF-08FD-49FC-9195-3B6E6420D999"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "RecycloScan/Styling/ColorTheme.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "Color"
+            landmarkType = "21">
+            <Locations>
+               <Location
+                  uuid = "8CF06DEF-08FD-49FC-9195-3B6E6420D999 - 1414644acb0b2d03"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "one-time initialization function for CompostOrange"
+                  moduleName = "RecycloScan.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kgobi/Documents/GitHub/IOS-Hackathon-25/untitled%20folder/RecycloScan/RecycloScan/Styling/ColorTheme.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "39"
+                  endingLineNumber = "39">
+               </Location>
+               <Location
+                  uuid = "8CF06DEF-08FD-49FC-9195-3B6E6420D999 - af5bd53f31e3bc49"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SwiftUI.Color.CompostOrange.unsafeMutableAddressor : SwiftUI.Color"
+                  moduleName = "RecycloScan.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kgobi/Documents/GitHub/IOS-Hackathon-25/untitled%20folder/RecycloScan/RecycloScan/Styling/ColorTheme.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "39"
+                  endingLineNumber = "39">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

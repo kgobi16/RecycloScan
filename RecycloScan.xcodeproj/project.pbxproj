@@ -29,9 +29,22 @@
 		F22FB4C92E97C6B7007B6ED7 /* RecycloScanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecycloScanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F2C0497B2E9F34D200264E0B /* Exceptions for "RecycloScan" folder in "RecycloScan" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F22FB4B12E97C6B6007B6ED7 /* RecycloScan */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F22FB4B42E97C6B6007B6ED7 /* RecycloScan */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F2C0497B2E9F34D200264E0B /* Exceptions for "RecycloScan" folder in "RecycloScan" target */,
+			);
 			path = RecycloScan;
 			sourceTree = "<group>";
 		};
@@ -398,7 +411,7 @@
 				DEVELOPMENT_TEAM = P7PL5J4AMN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to scan and classify household waste for proper disposal.";
+				INFOPLIST_FILE = RecycloScan/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -427,7 +440,7 @@
 				DEVELOPMENT_TEAM = P7PL5J4AMN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires access to the camera to scan and classify household waste for proper disposal.";
+				INFOPLIST_FILE = RecycloScan/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

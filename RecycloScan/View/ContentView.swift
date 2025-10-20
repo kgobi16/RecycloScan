@@ -13,58 +13,40 @@ struct ContentView: View {
     @StateObject private var notificationManager = NotificationManagerVM.sample
     @State private var selectedTab = 0
     
-    init() {
-        // Set up the connection between managers
-        // This allows Kobi's scheduler to trigger your points system
-    }
-    
     var body: some View {
         TabView(selection: $selectedTab) {
             // Home Tab
             HomeView(
                 recyclingManager: recyclingManager,
                 pickupScheduler: pickupScheduler,
-                notificationManager: notificationManager
+                notificationManager: notificationManager,
+                selectedTab: $selectedTab
             )
             .tabItem {
                 Label("Home", systemImage: "house.fill")
             }
             .tag(0)
             
-            // Scan Tab
-            WasteScannerView()
+            // Scan Tab (Ariel's)
+            ScanPlaceholderView()
                 .tabItem {
                     Label("Scan", systemImage: "camera.fill")
                 }
                 .tag(1)
-            
-            // Collection Tab (Yu's pending items)
-            PendingCollectionView(manager: recyclingManager)
-                .tabItem {
-                    Label("Collection", systemImage: "tray.fill")
-                }
-                .tag(2)
-            
-            // Points Tab (Yu's points & stats)
-            PointsStatsView(manager: recyclingManager)
-                .tabItem {
-                    Label("Points", systemImage: "star.fill")
-                }
-                .tag(3)
             
             // Schedule Tab (Kobi's)
             PickupAppointmentView(viewModel: pickupScheduler)
                 .tabItem {
                     Label("Schedule", systemImage: "calendar")
                 }
-                .tag(4)
+                .tag(2)
             
-            // Notifications Tab
-            NotificationCenterView(viewModel: notificationManager)
+            // Points Tab (Yu's)
+            PointsStatsView(manager: recyclingManager)
                 .tabItem {
-                    Label("Alerts", systemImage: "bell.fill")
+                    Label("Points", systemImage: "star.fill")
                 }
-                .tag(5)
+                .tag(3)
         }
         .accentColor(.ForestGreen)
         .onAppear {
@@ -74,11 +56,14 @@ struct ContentView: View {
     }
 }
 
-// Home View (updated with points info)
+// MARK: - Home View
+
 struct HomeView: View {
     @ObservedObject var recyclingManager: RecyclingManager
     @ObservedObject var pickupScheduler: PickupSchedulerVM
     @ObservedObject var notificationManager: NotificationManagerVM
+    @State private var showingNotifications = false
+    @Binding var selectedTab: Int
     
     var body: some View {
         NavigationView {
@@ -96,12 +81,12 @@ struct HomeView: View {
                         // Hero Section
                         heroSection
                         
-                        // Quick Stats (Updated to include points)
+                        // Quick Stats
                         quickStatsSection
                         
                         // Pending Items Card (if any)
                         if recyclingManager.getPendingItemCount() > 0 {
-                            pendingItemsCard
+                            pendingCollectionCard
                         }
                         
                         // Today's Pickups
@@ -116,11 +101,8 @@ struct HomeView: View {
                         
                         // Active Notifications
                         if !notificationManager.activeNotifications.isEmpty {
-                            activeNotificationsSection
+                            activeAlertsCard
                         }
-                        
-                        // Quick Actions
-                        quickActionsSection
                     }
                     .padding()
                 }
@@ -135,10 +117,14 @@ struct HomeView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showingNotifications) {
+                NotificationCenterView(viewModel: notificationManager)
+            }
         }
     }
     
-    // Hero Section
+    // MARK: - Hero Section
+    
     private var heroSection: some View {
         VStack(spacing: 12) {
             Image(systemName: "leaf.circle.fill")
@@ -153,17 +139,24 @@ struct HomeView: View {
         .padding(.vertical, 20)
     }
     
-    // Quick Stats Section (Updated with points)
+    // MARK: - Quick Stats Section
+    
     private var quickStatsSection: some View {
         VStack(spacing: 12) {
             HStack(spacing: 12) {
-                StatCard(
-                    title: "Your Points",
-                    value: "\(recyclingManager.totalPoints)",
-                    icon: "star.fill",
-                    color: .ForestGreen
-                )
+                Button(action: {
+                    selectedTab = 3  // Navigate to Points tab
+                }) {
+                    StatCard(
+                        title: "Your Points",
+                        value: "\(recyclingManager.totalPoints)",
+                        icon: "star.fill",
+                        color: .ForestGreen
+                    )
+                }
+                .buttonStyle(PlainButtonStyle())
                 
+                // Pending Items - non-clickable (already shown below)
                 StatCard(
                     title: "Pending Items",
                     value: "\(recyclingManager.getPendingItemCount())",
@@ -173,25 +166,48 @@ struct HomeView: View {
             }
             
             HStack(spacing: 12) {
+                // Next Pickup - non-clickable (just info display)
                 StatCard(
-                    title: "Scheduled Bins",
-                    value: "\(pickupScheduler.enabledBinCount())",
-                    icon: "trash.circle.fill",
+                    title: "Next Pickup",
+                    value: nextPickupDays(),
+                    icon: "calendar",
                     color: .PlasticBlue
                 )
                 
-                StatCard(
-                    title: "Active Alerts",
-                    value: "\(notificationManager.activeNotifications.count)",
-                    icon: "bell.circle.fill",
-                    color: .WarmOrange
-                )
+                Button(action: {
+                    showingNotifications = true  // Show notifications sheet
+                }) {
+                    StatCard(
+                        title: "Active Alerts",
+                        value: "\(notificationManager.activeNotifications.count)",
+                        icon: "bell.fill",
+                        color: .WarmOrange
+                    )
+                }
+                .buttonStyle(PlainButtonStyle())
             }
         }
     }
     
-    // Pending Items Card
-    private var pendingItemsCard: some View {
+    private func nextPickupDays() -> String {
+        guard let nextPickup = pickupScheduler.getNextPickup() else {
+            return "None"
+        }
+        
+        let days = Calendar.current.dateComponents([.day], from: Date(), to: nextPickup.date).day ?? 0
+        
+        if days == 0 {
+            return "Today"
+        } else if days == 1 {
+            return "1d"
+        } else {
+            return "\(days)d"
+        }
+    }
+    
+    // MARK: - Pending Collection Card (Quick Action)
+    
+    private var pendingCollectionCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Image(systemName: "tray.fill")
@@ -216,13 +232,37 @@ struct HomeView: View {
                 }
                 
                 Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.TextSecondary)
             }
             
-            Text("Schedule a pickup to earn your points!")
+            // Show breakdown if there are items
+            if recyclingManager.getPendingItemCount() > 0 {
+                Divider()
+                    .padding(.vertical, 4)
+                
+                let breakdown = recyclingManager.getPendingItemsByType()
+                let sortedBreakdown = breakdown.sorted { $0.value > $1.value }.prefix(3)
+                
+                VStack(spacing: 8) {
+                    ForEach(Array(sortedBreakdown), id: \.key) { type, count in
+                        HStack(spacing: 8) {
+                            Text(type.icon)
+                                .font(.system(size: 16))
+                            
+                            Text(type.displayName)
+                                .bodySmallStyle()
+                            
+                            Spacer()
+                            
+                            Text("\(count) items")
+                                .captionStyle()
+                        }
+                    }
+                }
+            }
+            
+            Text("💡 Schedule a pickup to earn your points!")
                 .captionStyle()
+                .padding(.top, 4)
         }
         .padding()
         .background(Color.SurfaceWhite)
@@ -230,7 +270,8 @@ struct HomeView: View {
         .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
     }
     
-    // Today's Pickups Card
+    // MARK: - Today's Pickups Card
+    
     private var todayPickupsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -274,7 +315,8 @@ struct HomeView: View {
         .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
     }
     
-    // Next Pickup Card
+    // MARK: - Next Pickup Card
+    
     private func nextPickupCard(binType: BinType, date: Date) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -320,78 +362,83 @@ struct HomeView: View {
         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
     }
     
-    // Active Notifications Section
-    private var activeNotificationsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Active Alerts")
-                    .headingMediumStyle()
+    // MARK: - Active Alerts Card (Quick Action)
+    
+    private var activeAlertsCard: some View {
+        Button(action: {
+            showingNotifications = true
+        }) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "bell.fill")
+                        .font(.system(size: 24))
+                        .foregroundColor(.WarmOrange)
+                    
+                    Text("Active Alerts")
+                        .headingMediumStyle()
+                    
+                    Spacer()
+                    
+                    Text("\(notificationManager.activeNotifications.count)")
+                        .bodySmallStyle()
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
+                        .background(Color.WarmOrange.opacity(0.2))
+                        .foregroundColor(.WarmOrange)
+                        .cornerRadius(12)
+                    
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.TextSecondary)
+                }
                 
-                Spacer()
+                VStack(spacing: 8) {
+                    ForEach(notificationManager.activeNotifications.prefix(3)) { notification in
+                        HStack(spacing: 12) {
+                            Circle()
+                                .fill(notificationColor(for: notification))
+                                .frame(width: 8, height: 8)
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(notification.title)
+                                    .bodyMediumStyle()
+                                    .lineLimit(1)
+                                
+                                Text(notification.relativeTimeString)
+                                    .captionSmallStyle()
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.vertical, 8)
+                    }
+                }
                 
-                Text("\(notificationManager.activeNotifications.count)")
-                    .bodySmallStyle()
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 4)
-                    .background(Color.WarmOrange.opacity(0.2))
-                    .foregroundColor(.WarmOrange)
-                    .cornerRadius(12)
-            }
-            
-            VStack(spacing: 8) {
-                ForEach(notificationManager.activeNotifications.prefix(3)) { notification in
-                    CompactNotificationRow(notification: notification)
+                if notificationManager.activeNotifications.count > 3 {
+                    Text("Tap to see all \(notificationManager.activeNotifications.count) alerts")
+                        .captionStyle()
+                        .foregroundColor(.ForestGreen)
+                        .padding(.top, 4)
                 }
             }
+            .padding()
+            .background(Color.SurfaceWhite)
+            .cornerRadius(20)
+            .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
         }
-        .padding()
-        .background(Color.SurfaceWhite)
-        .cornerRadius(20)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .buttonStyle(PlainButtonStyle())
     }
     
-    // Quick Actions Section
-    private var quickActionsSection: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 12) {
-                QuickActionButton(
-                    title: "Schedule",
-                    icon: "calendar.badge.plus",
-                    color: .ForestGreen
-                ) {
-                    // Navigate to schedule tab
-                }
-                
-                QuickActionButton(
-                    title: "Scan Item",
-                    icon: "camera.fill",
-                    color: .GrassGreen
-                ) {
-                    // Navigate to scan tab
-                }
-            }
-            
-            HStack(spacing: 12) {
-                QuickActionButton(
-                    title: "Collection",
-                    icon: "tray.fill",
-                    color: .PlasticBlue
-                ) {
-                    // Navigate to collection tab
-                }
-                
-                QuickActionButton(
-                    title: "Points",
-                    icon: "star.fill",
-                    color: .CompostOrange
-                ) {
-                    // Navigate to points tab
-                }
-            }
+    private func notificationColor(for notification: NotificationItem) -> Color {
+        switch notification.type {
+        case .binReminder:
+            return notification.binType?.color ?? .ForestGreen
+        case .weeklyTip:
+            return .WarmOrange
         }
     }
     
-    // Helpers
+    // MARK: - Helpers
+    
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -411,7 +458,8 @@ struct HomeView: View {
     }
 }
 
-// Stat Card
+// MARK: - Supporting Views
+
 struct StatCard: View {
     let title: String
     let value: String
@@ -440,71 +488,7 @@ struct StatCard: View {
     }
 }
 
-// Compact Notification Row
-struct CompactNotificationRow: View {
-    let notification: NotificationItem
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            Circle()
-                .fill(iconColor)
-                .frame(width: 8, height: 8)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(notification.title)
-                    .bodyMediumStyle()
-                    .lineLimit(1)
-                
-                Text(notification.relativeTimeString)
-                    .captionSmallStyle()
-            }
-            
-            Spacer()
-            
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundColor(.TextSecondary)
-        }
-        .padding(.vertical, 8)
-    }
-    
-    private var iconColor: Color {
-        switch notification.type {
-        case .binReminder:
-            return notification.binType?.color ?? .ForestGreen
-        case .weeklyTip:
-            return .WarmOrange
-        }
-    }
-}
-
-// Quick Action Button
-struct QuickActionButton: View {
-    let title: String
-    let icon: String
-    let color: Color
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.system(size: 24))
-                    .foregroundColor(.white)
-                
-                Text(title)
-                    .font(.bodySmall)
-                    .foregroundColor(.white)
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(color)
-            .cornerRadius(16)
-        }
-    }
-}
-
-// Scan Placeholder View (Ariel will replace this)
+// Ariel's Scanner Placeholder (will be replaced by actual WasteScannerView)
 struct ScanPlaceholderView: View {
     var body: some View {
         ZStack {
@@ -519,7 +503,7 @@ struct ScanPlaceholderView: View {
                 Text("Scanner Coming Soon")
                     .displayMediumStyle()
                 
-                Text("This is where Ariel's scanner will go")
+                Text("Ariel's AI scanner will go here")
                     .bodyMediumStyle()
                     .multilineTextAlignment(.center)
             }
@@ -528,7 +512,8 @@ struct ScanPlaceholderView: View {
     }
 }
 
-// Previews
+// MARK: - Previews
+
 #Preview("Content View") {
     ContentView()
 }
@@ -537,37 +522,7 @@ struct ScanPlaceholderView: View {
     HomeView(
         recyclingManager: RecyclingManager.sample,
         pickupScheduler: PickupSchedulerVM.sample,
-        notificationManager: NotificationManagerVM.sample
+        notificationManager: NotificationManagerVM.sample,
+        selectedTab: .constant(0)
     )
-}
-
-#Preview("Stat Card") {
-    StatCard(
-        title: "Your Points",
-        value: "150",
-        icon: "star.fill",
-        color: .ForestGreen
-    )
-    .padding()
-    .background(Color.BackgroundBeige)
-}
-
-#Preview("Quick Actions") {
-    VStack(spacing: 12) {
-        HStack(spacing: 12) {
-            QuickActionButton(
-                title: "Schedule",
-                icon: "calendar.badge.plus",
-                color: .ForestGreen
-            ) {}
-            
-            QuickActionButton(
-                title: "Scan Item",
-                icon: "camera.fill",
-                color: .GrassGreen
-            ) {}
-        }
-    }
-    .padding()
-    .background(Color.BackgroundBeige)
 }

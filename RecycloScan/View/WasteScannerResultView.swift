@@ -35,7 +35,7 @@ struct WasteScannerResultView: View {
             in: .whitespacesAndNewlines
         ).lowercased()
         switch name {
-        case "plastic": return "bottle.fill"
+        case "plastic": return "waterbottle.fill"
         case "paper": return "doc.fill"
         case "metal": return "wrench.and.screwdriver.fill"
         case "glass": return "wineglass.fill"

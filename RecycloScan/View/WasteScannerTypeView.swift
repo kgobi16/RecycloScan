@@ -16,7 +16,8 @@ struct WasteScannerTypeView: View {
             Color.backgroundBeige
                 .ignoresSafeArea()
             
-            VStack(spacing: 20) {
+            ScrollView {
+                VStack(spacing: 20) {
                 Text("Scan Analysis")
                     .font(.displayLarge)
                 
@@ -97,8 +98,9 @@ struct WasteScannerTypeView: View {
                 .padding(.vertical, 15)
                 .background(Color.forestGreen)
                 .clipShape(Capsule())
+                }
+                .padding()
             }
-            .padding()
         }
     }
 }

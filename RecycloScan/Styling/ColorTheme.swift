@@ -36,8 +36,8 @@ extension Color {
     static let GlassGreen = Color("GlassGreen")          // For glass
     static let MetalGray = Color("MetalGray")            // For metal/aluminum
     static let EWasteRed = Color("EWasteRed")            // For electronic waste
-    static let CompostOrange = Color("CompostOrange")    // For organic/compost
-    static let LandfillGray = Color("LandfillGray")      // For landfill items
+    static let OrganicOrange = Color("OrganicOrange")    // For organic/compost
+    static let GeneralGray = Color("GeneralGray")       // For general/landfill items
     
     // Bin Collection Colors
     // Colors matching actual municipal bin colors for pickup scheduling
@@ -110,8 +110,8 @@ struct ColorTheme_Previews: PreviewProvider {
                     ColorSwatch(color: .GlassGreen, name: "Glass Green", hex: "For Glass")
                     ColorSwatch(color: .MetalGray, name: "Metal Gray", hex: "For Metal")
                     ColorSwatch(color: .EWasteRed, name: "E-Waste Red", hex: "For Electronics")
-                    ColorSwatch(color: .CompostOrange, name: "Compost Orange", hex: "For Organic")
-                    ColorSwatch(color: .LandfillGray, name: "Landfill Gray", hex: "For Landfill")
+                    ColorSwatch(color: .OrganicOrange, name: "Organic Orange", hex: "For Organic")
+                    ColorSwatch(color: .GeneralGray, name: "General Gray", hex: "For General/Landfill")
                 }
                 
                 Divider()

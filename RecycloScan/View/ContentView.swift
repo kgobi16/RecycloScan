@@ -24,8 +24,8 @@ struct ContentView: View {
             }
             .tag(0)
             
-            // Scan Tab (Placeholder)
-            ScanPlaceholderView()
+            // Scan Tab
+            WasteScannerView()
                 .tabItem {
                     Label("Scan", systemImage: "camera.fill")
                 }

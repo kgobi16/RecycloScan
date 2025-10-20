@@ -11,7 +11,7 @@ import SwiftUI
 struct RecycloScanApp: App {
     var body: some Scene {
         WindowGroup {
-            WasteScannerView()
+            ContentView()
         }
     }
 }

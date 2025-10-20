@@ -10,7 +10,8 @@ import SwiftUI
 import Vision
 
 class ScannerClassifierViewModel: ObservableObject {
-    @Published var resultText = ""
+    @Published var wasteTypeText = ""
+    @Published var confidenceText = ""
     @Published var selectedImage: UIImage?
     var classificationRequest: VNCoreMLRequest?
     
@@ -35,26 +36,25 @@ class ScannerClassifierViewModel: ObservableObject {
     func performClassification(for request: VNRequest, error: Error?){
         DispatchQueue.main.async {
             guard let returnedResult = request.results else {
-                self.resultText = "Error: Unable to classify image.\n\(error?.localizedDescription ?? "Unknown error")"
+                self.wasteTypeText = "Error: Unable to classify image.\n\(error?.localizedDescription ?? "Unknown error")"
+                self.confidenceText = "N/A"
                 return
             }
             
             let classifications = returnedResult as! [VNClassificationObservation]
             
             if classifications.isEmpty {
-                self.resultText = "No waste items detected. Please try again with a clearer image."
+                self.wasteTypeText = "No waste items detected. Please try again with a clearer image."
+                self.confidenceText = "N/A"
             } else {
                 // Get the top classification with highest confidence
                 let topClassification = classifications.first!
                 let confidence = topClassification.confidence
                 let wasteType = topClassification.identifier
                 
-                // Format the result for better display
-                if confidence > 0.5 {
-                    self.resultText = "Detected: \(wasteType)\nConfidence: \(String(format: "%.1f", confidence * 100))%"
-                } else {
-                    self.resultText = "Possible: \(wasteType)\nConfidence: \(String(format: "%.1f", confidence * 100))%\n\nNote: Low confidence. Please try a clearer image."
-                }
+                // Set texts separately
+                self.wasteTypeText = wasteType
+                self.confidenceText = "\(String(format: "%.1f", confidence * 100))%"
             }
         }
     }
@@ -64,7 +64,8 @@ class ScannerClassifierViewModel: ObservableObject {
             return
         }
         
-        resultText = "Loading..."
+        wasteTypeText = "Loading..."
+        confidenceText = "Loading..."
         
         let orientation = cgiImageOrientation(from: selectedImage.imageOrientation)
         guard let ciImage = CIImage(image: selectedImage) else {

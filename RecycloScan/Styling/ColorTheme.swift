@@ -110,7 +110,7 @@ struct ColorTheme_Previews: PreviewProvider {
                     ColorSwatch(color: .GlassGreen, name: "Glass Green", hex: "For Glass")
                     ColorSwatch(color: .MetalGray, name: "Metal Gray", hex: "For Metal")
                     ColorSwatch(color: .EWasteRed, name: "E-Waste Red", hex: "For Electronics")
-                    ColorSwatch(color: .OrganicOrange, name: "Organic Orange", hex: "For Organic/Compost")
+                    ColorSwatch(color: .OrganicOrange, name: "Organic Orange", hex: "For Organic")
                     ColorSwatch(color: .GeneralGray, name: "General Gray", hex: "For General/Landfill")
                 }
                 

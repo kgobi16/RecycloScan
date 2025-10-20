@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct WasteScannerTypeView: View {
+struct WasteScannerResultView: View {
     let capturedImage: UIImage
     @Binding var isPresented: Bool
+    @ObservedObject var classifierViewModel: ScannerClassifierViewModel
     
     var body: some View {
         ZStack {
@@ -28,6 +29,24 @@ struct WasteScannerTypeView: View {
                     .frame(width: 200, height: 200)
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 16))
+                
+                // Classification Results (if available)
+                if !classifierViewModel.resultText.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Classification Results:")
+                            .font(.headline)
+                            .foregroundColor(.textPrimary)
+                        
+                        Text(classifierViewModel.resultText)
+                            .font(.body)
+                            .foregroundColor(.textSecondary)
+                            .multilineTextAlignment(.leading)
+                            .padding()
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                    }
+                }
                 
                 Text("The camera has identified this item as:")
                     .font(.headingSmall)
@@ -106,8 +125,9 @@ struct WasteScannerTypeView: View {
 }
 
 #Preview {
-    WasteScannerTypeView(
+    WasteScannerResultView(
         capturedImage: UIImage(systemName: "photo")!,
-        isPresented: .constant(true)
+        isPresented: .constant(true),
+        classifierViewModel: ScannerClassifierViewModel()
     )
 }

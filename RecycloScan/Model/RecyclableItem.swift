@@ -56,7 +56,7 @@ enum RecyclableType: String, Codable, CaseIterable {
     
     var icon: String {
         switch self {
-        case .plastic: return "bottle.fill"
+        case .plastic: return "waterbottle.fill"
         case .paper: return "doc.fill"
         case .metal: return "wrench.and.screwdriver.fill"
         case .glass: return "wineglass.fill"

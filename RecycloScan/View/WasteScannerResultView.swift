@@ -81,7 +81,7 @@ struct WasteScannerResultView: View {
                 VStack(spacing: 20) {
                     
                     // MARK: - Page title
-                    Text("Scan Analysis")
+                    Text("Scan Result")
                         .font(.displayLarge)
 
                     // Smaller captured image at the top

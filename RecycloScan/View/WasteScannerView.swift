@@ -80,16 +80,8 @@ struct WasteScannerView: View {
                     
                     // Capture button
                     Button(action: {
-                        // Capture photo and process with ML
+                        // Capture photo; presentation is driven by capturedImage change
                         cameraManager.capturePhoto()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            // Process captured image with ML model
-                            if let capturedImage = cameraManager.capturedImage {
-                                classifierViewModel.selectedImage = capturedImage
-                                classifierViewModel.classifyImage()
-                            }
-                            showWasteTypeView = true
-                        }
                     }) {
                         HStack {
                             Image(systemName: "camera.fill")
@@ -117,13 +109,43 @@ struct WasteScannerView: View {
         .onDisappear {
             cameraManager.stopSession()
         }
-        .fullScreenCover(isPresented: $showWasteTypeView) {
+        .onChange(of: cameraManager.capturedImage) { _, newImage in
+            // Present results as soon as a photo is available
+            if let image = newImage {
+                classifierViewModel.selectedImage = image
+                classifierViewModel.classifyImage()
+                showWasteTypeView = true
+            }
+        }
+        .fullScreenCover(isPresented: $showWasteTypeView, onDismiss: {
+            // Ensure state is reset to avoid unintended re-presentation
+            cameraManager.capturedImage = nil
+        }) {
             if let capturedImage = cameraManager.capturedImage {
                 WasteScannerResultView(
                     capturedImage: capturedImage,
                     isPresented: $showWasteTypeView,
                     classifierViewModel: classifierViewModel
                 )
+            } else {
+                // Fallback UI if rotation invalidates the image buffer
+                ZStack {
+                    Color.backgroundBeige.ignoresSafeArea()
+                    VStack(spacing: 16) {
+                        ProgressView()
+                        Text("Preparing result…")
+                            .font(.caption)
+                            .foregroundColor(.textSecondary)
+                        Button("Close") {
+                            showWasteTypeView = false
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 28)
+                        .padding(.vertical, 12)
+                        .background(Color.forestGreen)
+                        .clipShape(Capsule())
+                    }
+                }
             }
         }
     }

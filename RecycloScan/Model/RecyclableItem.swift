@@ -48,21 +48,21 @@ enum RecyclableType: String, Codable, CaseIterable {
         case .paper: return .PaperBrown
         case .metal: return .MetalGray
         case .glass: return .GlassGreen
-        case .organic: return .CompostOrange
+        case .organic: return .OrganicOrange
         case .electronic: return .EWasteRed
-        case .general: return .LandfillGray
+        case .general: return .GeneralGray
         }
     }
     
     var icon: String {
         switch self {
-        case .plastic: return "🧴"
-        case .paper: return "📄"
-        case .metal: return "🥫"
-        case .glass: return "🍾"
-        case .organic: return "🍎"
-        case .electronic: return "📱"
-        case .general: return "🗑️"
+        case .plastic: return "bottle.fill"
+        case .paper: return "doc.fill"
+        case .metal: return "wrench.and.screwdriver.fill"
+        case .glass: return "wineglass.fill"
+        case .organic: return "leaf.fill"
+        case .electronic: return "laptopcomputer"
+        case .general: return "trash.fill"
         }
     }
 }

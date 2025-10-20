@@ -10,6 +10,7 @@ import AVFoundation
 
 struct WasteScannerView: View {
     @StateObject private var cameraManager = CameraManager()
+    @StateObject private var classifierViewModel = ScannerClassifierViewModel()
     @State private var isScanning = false
     @State private var showWasteTypeView = false
     
@@ -79,9 +80,14 @@ struct WasteScannerView: View {
                     
                     // Capture button
                     Button(action: {
-                        // Capture photo and show waste scanner type view
+                        // Capture photo and process with ML
                         cameraManager.capturePhoto()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            // Process captured image with ML model
+                            if let capturedImage = cameraManager.capturedImage {
+                                classifierViewModel.selectedImage = capturedImage
+                                classifierViewModel.classifyImage()
+                            }
                             showWasteTypeView = true
                         }
                     }) {
@@ -113,9 +119,10 @@ struct WasteScannerView: View {
         }
         .fullScreenCover(isPresented: $showWasteTypeView) {
             if let capturedImage = cameraManager.capturedImage {
-                WasteScannerTypeView(
+                WasteScannerResultView(
                     capturedImage: capturedImage,
-                    isPresented: $showWasteTypeView
+                    isPresented: $showWasteTypeView,
+                    classifierViewModel: classifierViewModel
                 )
             }
         }

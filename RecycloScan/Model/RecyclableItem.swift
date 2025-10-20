@@ -48,9 +48,9 @@ enum RecyclableType: String, Codable, CaseIterable {
         case .paper: return .PaperBrown
         case .metal: return .MetalGray
         case .glass: return .GlassGreen
-        case .organic: return .CompostOrange
+        case .organic: return .OrganicOrange
         case .electronic: return .EWasteRed
-        case .general: return .LandfillGray
+        case .general: return .GeneralGray
         }
     }
     

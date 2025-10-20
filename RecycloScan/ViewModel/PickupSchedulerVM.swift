@@ -131,8 +131,8 @@ class PickupSchedulerVM: ObservableObject {
         // This could award points or track completion
         print("✅ Bins put out: \(binTypes.map { $0.displayName }.joined(separator: ", "))")
         
-        // Future integration with RecyclingManager for points
-        // recyclingManager?.recordBinCompletion(binTypes: binTypes, date: date)
+        // integration with RecyclingManager for points
+        recyclingManager?.recordBinCompletion(binTypes: binTypes, date: date)
     }
     
     //Set the RecyclingManager reference for gamification

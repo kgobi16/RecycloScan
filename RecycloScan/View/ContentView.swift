@@ -8,14 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var recyclingManager = RecyclingManager()
     @StateObject private var pickupScheduler = PickupSchedulerVM.sample
     @StateObject private var notificationManager = NotificationManagerVM.sample
     @State private var selectedTab = 0
+    
+    init() {
+        // Set up the connection between managers
+        // This allows Kobi's scheduler to trigger your points system
+    }
     
     var body: some View {
         TabView(selection: $selectedTab) {
             // Home Tab
             HomeView(
+                recyclingManager: recyclingManager,
                 pickupScheduler: pickupScheduler,
                 notificationManager: notificationManager
             )
@@ -31,27 +38,45 @@ struct ContentView: View {
                 }
                 .tag(1)
             
-            // Schedule Tab
+            // Collection Tab (Yu's pending items)
+            PendingCollectionView(manager: recyclingManager)
+                .tabItem {
+                    Label("Collection", systemImage: "tray.fill")
+                }
+                .tag(2)
+            
+            // Points Tab (Yu's points & stats)
+            PointsStatsView(manager: recyclingManager)
+                .tabItem {
+                    Label("Points", systemImage: "star.fill")
+                }
+                .tag(3)
+            
+            // Schedule Tab (Kobi's)
             PickupAppointmentView(viewModel: pickupScheduler)
                 .tabItem {
                     Label("Schedule", systemImage: "calendar")
                 }
-                .tag(2)
+                .tag(4)
             
             // Notifications Tab
             NotificationCenterView(viewModel: notificationManager)
                 .tabItem {
                     Label("Alerts", systemImage: "bell.fill")
                 }
-                .tag(3)
+                .tag(5)
         }
         .accentColor(.ForestGreen)
-        
+        .onAppear {
+            // Connect the managers after views are loaded
+            pickupScheduler.setRecyclingManager(recyclingManager)
+        }
     }
 }
 
-//Home View (temp can be changed by anyone )
+// Home View (updated with points info)
 struct HomeView: View {
+    @ObservedObject var recyclingManager: RecyclingManager
     @ObservedObject var pickupScheduler: PickupSchedulerVM
     @ObservedObject var notificationManager: NotificationManagerVM
     
@@ -71,8 +96,13 @@ struct HomeView: View {
                         // Hero Section
                         heroSection
                         
-                        // Quick Stats
+                        // Quick Stats (Updated to include points)
                         quickStatsSection
+                        
+                        // Pending Items Card (if any)
+                        if recyclingManager.getPendingItemCount() > 0 {
+                            pendingItemsCard
+                        }
                         
                         // Today's Pickups
                         if pickupScheduler.hasPickupToday() {
@@ -108,7 +138,7 @@ struct HomeView: View {
         }
     }
     
-    //Hero Section
+    // Hero Section
     private var heroSection: some View {
         VStack(spacing: 12) {
             Image(systemName: "leaf.circle.fill")
@@ -123,23 +153,81 @@ struct HomeView: View {
         .padding(.vertical, 20)
     }
     
-    // Quick Stats Section
+    // Quick Stats Section (Updated with points)
     private var quickStatsSection: some View {
-        HStack(spacing: 12) {
-            StatCard(
-                title: "Scheduled Bins",
-                value: "\(pickupScheduler.enabledBinCount())",
-                icon: "trash.circle.fill",
-                color: .ForestGreen
-            )
+        VStack(spacing: 12) {
+            HStack(spacing: 12) {
+                StatCard(
+                    title: "Your Points",
+                    value: "\(recyclingManager.totalPoints)",
+                    icon: "star.fill",
+                    color: .ForestGreen
+                )
+                
+                StatCard(
+                    title: "Pending Items",
+                    value: "\(recyclingManager.getPendingItemCount())",
+                    icon: "tray.fill",
+                    color: .GrassGreen
+                )
+            }
             
-            StatCard(
-                title: "Active Alerts",
-                value: "\(notificationManager.activeNotifications.count)",
-                icon: "bell.circle.fill",
-                color: .WarmOrange
-            )
+            HStack(spacing: 12) {
+                StatCard(
+                    title: "Scheduled Bins",
+                    value: "\(pickupScheduler.enabledBinCount())",
+                    icon: "trash.circle.fill",
+                    color: .PlasticBlue
+                )
+                
+                StatCard(
+                    title: "Active Alerts",
+                    value: "\(notificationManager.activeNotifications.count)",
+                    icon: "bell.circle.fill",
+                    color: .WarmOrange
+                )
+            }
         }
+    }
+    
+    // Pending Items Card
+    private var pendingItemsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "tray.fill")
+                    .font(.system(size: 24))
+                    .foregroundColor(.GrassGreen)
+                
+                Text("Items Ready to Recycle")
+                    .headingMediumStyle()
+                
+                Spacer()
+            }
+            
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("\(recyclingManager.getPendingItemCount()) items")
+                        .font(.displayMedium)
+                        .foregroundColor(.TextPrimary)
+                    
+                    Text("Potential: \(recyclingManager.getPotentialPoints()) points")
+                        .bodySmallStyle()
+                        .foregroundColor(.GrassGreen)
+                }
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .foregroundColor(.TextSecondary)
+            }
+            
+            Text("Schedule a pickup to earn your points!")
+                .captionStyle()
+        }
+        .padding()
+        .background(Color.SurfaceWhite)
+        .cornerRadius(20)
+        .shadow(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
     }
     
     // Today's Pickups Card
@@ -232,7 +320,7 @@ struct HomeView: View {
         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
     }
     
-    //Active Notifications Section
+    // Active Notifications Section
     private var activeNotificationsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
@@ -262,7 +350,7 @@ struct HomeView: View {
         .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
     }
     
-    //Quick Actions Section
+    // Quick Actions Section
     private var quickActionsSection: some View {
         VStack(spacing: 12) {
             HStack(spacing: 12) {
@@ -285,25 +373,25 @@ struct HomeView: View {
             
             HStack(spacing: 12) {
                 QuickActionButton(
-                    title: "View Stats",
-                    icon: "chart.bar.fill",
+                    title: "Collection",
+                    icon: "tray.fill",
                     color: .PlasticBlue
                 ) {
-                    // Navigate to stats
+                    // Navigate to collection tab
                 }
                 
                 QuickActionButton(
-                    title: "Alerts",
-                    icon: "bell.fill",
-                    color: .WarmOrange
+                    title: "Points",
+                    icon: "star.fill",
+                    color: .CompostOrange
                 ) {
-                    // Navigate to notifications
+                    // Navigate to points tab
                 }
             }
         }
     }
     
-    //Helpers
+    // Helpers
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -323,7 +411,7 @@ struct HomeView: View {
     }
 }
 
-//Stat Card
+// Stat Card
 struct StatCard: View {
     let title: String
     let value: String
@@ -352,7 +440,7 @@ struct StatCard: View {
     }
 }
 
-//Compact Notification Row
+// Compact Notification Row
 struct CompactNotificationRow: View {
     let notification: NotificationItem
     
@@ -390,7 +478,7 @@ struct CompactNotificationRow: View {
     }
 }
 
-//Quick Action Button
+// Quick Action Button
 struct QuickActionButton: View {
     let title: String
     let icon: String
@@ -416,7 +504,7 @@ struct QuickActionButton: View {
     }
 }
 
-//Scan Placeholder View
+// Scan Placeholder View (Ariel will replace this)
 struct ScanPlaceholderView: View {
     var body: some View {
         ZStack {
@@ -440,21 +528,24 @@ struct ScanPlaceholderView: View {
     }
 }
 
-//Previews
-#Preview("Home View") {
+// Previews
+#Preview("Content View") {
     ContentView()
 }
 
-#Preview("Home View - Dark Mode") {
-    ContentView()
-        .preferredColorScheme(.dark)
+#Preview("Home View") {
+    HomeView(
+        recyclingManager: RecyclingManager.sample,
+        pickupScheduler: PickupSchedulerVM.sample,
+        notificationManager: NotificationManagerVM.sample
+    )
 }
 
 #Preview("Stat Card") {
     StatCard(
-        title: "Scheduled Bins",
-        value: "4",
-        icon: "trash.circle.fill",
+        title: "Your Points",
+        value: "150",
+        icon: "star.fill",
         color: .ForestGreen
     )
     .padding()

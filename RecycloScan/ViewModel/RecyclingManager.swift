@@ -24,7 +24,7 @@ class RecyclingManager: ObservableObject {
     // MARK: - Scanning (Count Only, No Points)
     
     // Add scanned item to pending collection
-    // Called by Ariel's ScannerViewModel after classification
+    // Called by Ariel's WasteScannerView after classification
     func addScannedItem(type: RecyclableType) {
         let item = RecyclableItem(type: type)
         pendingItems.append(item)
@@ -36,7 +36,7 @@ class RecyclingManager: ObservableObject {
     // MARK: - Pickup Completion (Award Points)
     
     // Complete pickup and award points
-    // Called by Kgobi's PickupScheduler when garbage is collected
+    // Called by Kobi's PickupSchedulerVM when garbage is collected
     func completePickup(pickupDate: Date) {
         guard !pendingItems.isEmpty else {
             print("⚠️ No items to collect")
@@ -56,6 +56,18 @@ class RecyclingManager: ObservableObject {
         saveToUserDefaults()
         
         print("🎉 Pickup completed! +\(pickupEvent.pointsAwarded) points for \(collectedItems.count) items")
+    }
+    
+    // Record bin completion (called by Kobi's confirmBinsPutOut)
+    // This is for when bins are put out, but items haven't been scanned yet
+    // Will extend this later to award bonus points for putting bins out on time
+    func recordBinCompletion(binTypes: [BinType], date: Date) {
+        // trigger pickup completion if there are pending items
+        if !pendingItems.isEmpty {
+            completePickup(pickupDate: date)
+        }
+        
+        print("🗑️ Bins recorded: \(binTypes.map { $0.displayName }.joined(separator: ", "))")
     }
     
     // Remove item from pending collection
@@ -152,6 +164,29 @@ class RecyclingManager: ObservableObject {
     }
 }
 
+// MARK: - Sample Data
+
+extension RecyclingManager {
+    static var sample: RecyclingManager {
+        let manager = RecyclingManager()
+        
+        // Add some sample scanned items
+        manager.addScannedItem(type: .plastic)
+        manager.addScannedItem(type: .paper)
+        manager.addScannedItem(type: .metal)
+        manager.addScannedItem(type: .glass)
+        
+        // Simulate a completed pickup
+        manager.completePickup(pickupDate: Calendar.current.date(byAdding: .day, value: -3, to: Date())!)
+        
+        // Add more pending items
+        manager.addScannedItem(type: .electronic)
+        manager.addScannedItem(type: .plastic)
+        
+        return manager
+    }
+}
+
 // MARK: Integration
 
 /*
@@ -160,16 +195,19 @@ class RecyclingManager: ObservableObject {
  
  1. ARIEL'S SCANNER (after image classification completes):
  
-    // In ScannerViewModel.swift
+    // In WasteScannerView or ScannerViewModel
     func handleClassificationResult(_ result: RecyclableType) {
         recyclingManager.addScannedItem(type: result)
     }
  
- 2. KGOBI'S PICKUP SCHEDULER (when pickup confirmed):
+ 2. KOBI'S PICKUP SCHEDULER (in PickupSchedulerVM.swift):
  
-    // In PickupScheduler.swift
-    func confirmPickupCompletion(date: Date) {
-        recyclingManager.completePickup(pickupDate: date)
+    // Already integrated! Kobi's confirmBinsPutOut calls:
+    func confirmBinsPutOut(for binTypes: [BinType], on date: Date) {
+        recyclingManager?.recordBinCompletion(binTypes: binTypes, date: date)
     }
+    
+    // Update line 77-78 in PickupSchedulerVM to:
+    recyclingManager?.recordBinCompletion(binTypes: binTypes, date: date)
  
  */

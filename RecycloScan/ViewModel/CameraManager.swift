@@ -124,10 +124,13 @@ class CameraManager: NSObject, ObservableObject {
             }
 
             self.captureSession.commitConfiguration()
-
-            // Start the session after a brief delay to ensure configuration is complete
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.startSession()
+            
+            // Ensure configuration is fully committed before starting
+            DispatchQueue.main.async {
+                // Add a small delay to ensure commitConfiguration is fully processed
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    self.startSession()
+                }
             }
         }
     }
@@ -143,13 +146,21 @@ class CameraManager: NSObject, ObservableObject {
         sessionQueue.async { [weak self] in
             guard let self = self else { return }
 
-            if !self.captureSession.isRunning {
-                self.captureSession.startRunning()
-                print("Camera session started")
+            // Double-check that session is not running
+            guard !self.captureSession.isRunning else {
+                print("Session is already running")
+                DispatchQueue.main.async {
+                    self.isSessionRunning = true
+                }
+                return
             }
+            
+            // Start the session
+            self.captureSession.startRunning()
+            print("Camera session started")
 
             DispatchQueue.main.async {
-                self.isSessionRunning = true
+                self.isSessionRunning = self.captureSession.isRunning
                 print("Session running state: \(self.isSessionRunning)")
             }
         }

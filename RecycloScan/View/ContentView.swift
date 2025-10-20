@@ -383,7 +383,7 @@ struct HomeView: View {
                 QuickActionButton(
                     title: "Points",
                     icon: "star.fill",
-                    color: .CompostOrange
+                    color: .organicOrange
                 ) {
                     // Navigate to points tab
                 }

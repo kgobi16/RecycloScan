@@ -110,7 +110,7 @@ struct PointsStatsView: View {
                     title: "This Month",
                     value: "\(manager.getPointsThisMonth())",
                     icon: "star.fill",
-                    color: .CompostOrange
+                    color: .organicOrange
                 )
             }
         }

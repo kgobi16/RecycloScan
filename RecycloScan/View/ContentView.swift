@@ -53,6 +53,10 @@ struct ContentView: View {
         .onAppear {
             // Connect the managers after views are loaded
             pickupScheduler.setRecyclingManager(recyclingManager)
+            
+            // Update widget data
+            let nextPickup = pickupScheduler.getNextPickup()
+            recyclingManager.updateWidgetData(nextPickup: nextPickup)
         }
     }
 }

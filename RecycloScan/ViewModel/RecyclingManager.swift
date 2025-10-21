@@ -11,6 +11,9 @@
 
 import Foundation
 import SwiftUI
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 class RecyclingManager: ObservableObject {
     @Published var totalPoints: Int = 0
@@ -107,6 +110,15 @@ class RecyclingManager: ObservableObject {
             .reduce(0) { $0 + $1.pointsAwarded }
     }
     
+    func getPointsThisWeek() -> Int {
+        let calendar = Calendar.current
+        let weekAgo = calendar.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+        
+        return pickupHistory
+            .filter { $0.timestamp >= weekAgo }
+            .reduce(0) { $0 + $1.pointsAwarded }
+    }
+    
     func getTotalPickups() -> Int {
         return pickupHistory.count
     }
@@ -134,6 +146,23 @@ class RecyclingManager: ObservableObject {
         
         return typeCounts
     }
+    
+    
+    func updateWidgetData(nextPickup: (binType: BinType, date: Date)?) {
+        let widgetData = WidgetData(
+            pointsThisWeek: getPointsThisWeek(),
+            nextPickupDate: nextPickup?.date,
+            nextPickupBinType: nextPickup?.binType.displayName,
+            lastUpdated: Date()
+        )
+        WidgetData.save(widgetData)
+        
+        // Tell widget to refresh
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
+    }
+    
     
     // MARK: - Persistence
     
@@ -195,7 +224,7 @@ extension RecyclingManager {
  
  1. ARIEL'S SCANNER (after image classification completes):
  
-    // In WasteScannerView or ScannerViewModel
+    // In WasteScannerView
     func handleClassificationResult(_ result: RecyclableType) {
         recyclingManager.addScannedItem(type: result)
     }
@@ -206,8 +235,5 @@ extension RecyclingManager {
     func confirmBinsPutOut(for binTypes: [BinType], on date: Date) {
         recyclingManager?.recordBinCompletion(binTypes: binTypes, date: date)
     }
-    
-    // Update line 77-78 in PickupSchedulerVM to:
-    recyclingManager?.recordBinCompletion(binTypes: binTypes, date: date)
  
  */

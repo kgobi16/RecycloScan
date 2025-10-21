@@ -9,6 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct WasteScannerView: View {
+    @ObservedObject var recyclingManager: RecyclingManager //integrate with point system
     @StateObject private var cameraManager = CameraManager()
     @StateObject private var classifierViewModel = ScannerClassifierViewModel()
     @State private var isScanning = false
@@ -125,7 +126,8 @@ struct WasteScannerView: View {
                 WasteScannerResultView(
                     capturedImage: capturedImage,
                     isPresented: $showWasteTypeView,
-                    classifierViewModel: classifierViewModel
+                    classifierViewModel: classifierViewModel,
+                    recyclingManager: recyclingManager
                 )
             } else {
                 // Fallback UI if rotation invalidates the image buffer
@@ -153,5 +155,5 @@ struct WasteScannerView: View {
 
 
 #Preview {
-    WasteScannerView()
+    WasteScannerView(recyclingManager: RecyclingManager.sample)
 }

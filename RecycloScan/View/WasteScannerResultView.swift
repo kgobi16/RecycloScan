@@ -11,6 +11,8 @@ struct WasteScannerResultView: View {
     let capturedImage: UIImage
     @Binding var isPresented: Bool
     @ObservedObject var classifierViewModel: ScannerClassifierViewModel
+    @ObservedObject var recyclingManager: RecyclingManager //manager to track scanned items
+    @State private var showSuccess = false //show success message
 
     // Derive card color from the detected waste type's display name (computed property)
     private var typeColor: Color {
@@ -18,14 +20,14 @@ struct WasteScannerResultView: View {
             in: .whitespacesAndNewlines
         ).lowercased()
         switch name {
-        case "plastic": return .plasticBlue
-        case "paper": return .paperBrown
-        case "metal": return .metalGray
-        case "glass": return .glassGreen
-        case "organic": return .organicOrange
-        case "e-waste", "electronic", "electronics": return .eWasteRed
-        case "general": return .generalGray
-        default: return .plasticBlue
+        case "plastic": return .PlasticBlue
+        case "paper": return .PaperBrown
+        case "metal": return .MetalGray
+        case "glass": return .GlassGreen
+        case "organic": return .OrganicOrange
+        case "e-waste", "electronic", "electronics": return .EWasteRed
+        case "general": return .GeneralGray
+        default: return .PlasticBlue
         }
     }
 
@@ -241,29 +243,132 @@ struct WasteScannerResultView: View {
                         .padding(20)
                     }
 
-                    Button(
-                        classifierViewModel.wasteTypeText.isEmpty
-                            ? "Retry" : "Close"
-                    ) {
-                        isPresented = false
+                    
+                    
+                    // action buttons
+                    if !classifierViewModel.wasteTypeText.isEmpty {
+                        if showSuccess {
+                            // Success message
+                            HStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.GrassGreen)
+                                Text("Recycled! +\(getPointValue()) points")
+                                    .font(.bodyMedium)
+                                    .foregroundColor(.GrassGreen)
+                            }
+                            .padding()
+                            .background(Color.GrassGreen.opacity(0.1))
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                        } else {
+                            // Action buttons
+                            HStack(spacing: 12) {
+                                // Try Again button
+                                Button("Try Again") {
+                                    isPresented = false
+                                }
+                                .foregroundColor(.TextSecondary)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 15)
+                                .background(Color.BackgroundBeige)
+                                .cornerRadius(12)
+                                
+                                // Add to Collection button
+                                Button("Recycle it!") {
+                                    addToCollection()
+                                }
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 15)
+                                .background(Color.GrassGreen)
+                                .cornerRadius(12)
+                            }
+                            .padding(.horizontal)
+                        }
+                    } else {
+                        // Retry button for errors
+                        Button("Retry") {
+                            isPresented = false
+                        }
+                        .foregroundColor(.white)
+                        .fontWeight(.bold)
+                        .padding(.horizontal, 40)
+                        .padding(.vertical, 15)
+                        .background(Color.GrassGreen)
+                        .clipShape(Capsule())
                     }
-                    .foregroundColor(.white)
-                    .fontWeight(.bold)
-                    .padding(.horizontal, 40)
-                    .padding(.vertical, 15)
-                    .background(Color.grassGreen)
-                    .clipShape(Capsule())
+                    
                 }
                 .padding()
             }
         }
+        .overlay(alignment: .topTrailing) {
+                    // X button in top-right corner - allows closing without action
+            Button(action: {
+                isPresented = false
+            }) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title2)
+                    .foregroundColor(.TextSecondary)
+                    .padding()
+                    .background(Color.BackgroundBeige.opacity(0.8))
+                    .clipShape(Circle())
+            }
+            .padding()
+        }
+    }
+    // MARK: - Helper Functions
+    // Adds the scanned item to RecyclingManager and shows success feedback
+    private func addToCollection() {
+        // Convert classification result to RecyclableType enum
+        let type = mapToRecyclableType()
+        
+        // Add to Yu's RecyclingManager
+        recyclingManager.addScannedItem(type: type)
+        
+        // Show success message with animation
+        withAnimation {
+            showSuccess = true
+        }
+        
+        // Auto-close after 1.5 seconds to return to camera
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            isPresented = false
+        }
+    }
+    
+    // Maps Ariel's classification text to Yu's RecyclableType enum
+    private func mapToRecyclableType() -> RecyclableType {
+        let name = classifierViewModel.wasteTypeText.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        ).lowercased()
+        
+        switch name {
+        case "plastic": return .plastic
+        case "paper": return .paper
+        case "metal": return .metal
+        case "glass": return .glass
+        case "organic": return .organic
+        case "e-waste", "electronic", "electronics": return .electronic
+        case "general": return .general
+        default: return .general  // Fallback to general if unknown type
+        }
+    }
+    
+    // Gets point value for detected item type
+    private func getPointValue() -> Int {
+        return mapToRecyclableType().pointValue
     }
 }
+    
 
 #Preview {
     WasteScannerResultView(
         capturedImage: UIImage(systemName: "photo")!,
         isPresented: .constant(true),
-        classifierViewModel: ScannerClassifierViewModel()
+        classifierViewModel: ScannerClassifierViewModel(),
+        recyclingManager: RecyclingManager.sample
     )
 }

@@ -81,8 +81,9 @@ struct PendingCollectionView: View {
         return VStack(alignment: .leading, spacing: 8) {
             ForEach(sortedBreakdown, id: \.key) { type, count in
                 HStack(spacing: 8) {
-                    Text(type.icon)
+                    Image(systemName: type.icon)
                         .font(.system(size: 16))
+                        .foregroundColor(type.color)
                     
                     Text(type.displayName)
                         .bodySmallStyle()
@@ -150,8 +151,9 @@ struct ItemCard: View {
                     .fill(item.type.color.opacity(0.15))
                     .frame(width: 50, height: 50)
                 
-                Text(item.type.icon)
+                Image(systemName: item.type.icon)
                     .font(.system(size: 24))
+                    .foregroundColor(item.type.color)
             }
             
             // Info

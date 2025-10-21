@@ -13,6 +13,7 @@ struct WasteScannerResultView: View {
     @ObservedObject var classifierViewModel: ScannerClassifierViewModel
     @ObservedObject var recyclingManager: RecyclingManager //manager to track scanned items
     @State private var showSuccess = false //show success message
+    @State private var showShareSheet = false //show share sheet
 
     // Derive card color from the detected waste type's display name (computed property)
     private var typeColor: Color {
@@ -80,6 +81,7 @@ struct WasteScannerResultView: View {
                 .ignoresSafeArea()
 
             ScrollView {
+                Color.clear.frame(height: 0)
                 VStack(spacing: 20) {
                     
                     // MARK: - Page title
@@ -87,16 +89,31 @@ struct WasteScannerResultView: View {
                         .font(.displayLarge)
 
                     // Smaller captured image at the top
-                    Image(uiImage: capturedImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 200, height: 200)
-                        .clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.grassGreen, lineWidth: 5)
-                        )
+                    ZStack(alignment: .bottomTrailing) {
+                        Image(uiImage: capturedImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 200, height: 200)
+                            .clipped()
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(Color.grassGreen, lineWidth: 5)
+                            )
+                        
+                        // Share button in bottom right
+                        Button(action: {
+                            showShareSheet = true
+                        }) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.callout)
+                                .foregroundColor(.white)
+                                .padding(8)
+                                .background(Color.GrassGreen.opacity(0.6))
+                                .clipShape(Circle())
+                        }
+                        .padding(8)
+                    }
 
                     // MARK: - Classification Results
                     if !classifierViewModel.wasteTypeText.isEmpty {
@@ -267,7 +284,7 @@ struct WasteScannerResultView: View {
                                 Button("Try Again") {
                                     isPresented = false
                                 }
-                                .foregroundColor(.TextSecondary)
+                                .foregroundColor(.grassGreen)
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 15)
@@ -304,21 +321,13 @@ struct WasteScannerResultView: View {
                 .padding()
             }
         }
-        .overlay(alignment: .topTrailing) {
-                    // X button in top-right corner - allows closing without action
-            Button(action: {
-                isPresented = false
-            }) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.title2)
-                    .foregroundColor(.TextSecondary)
-                    .padding()
-                    .background(Color.BackgroundBeige.opacity(0.8))
-                    .clipShape(Circle())
-            }
-            .padding()
+        .persistentSystemOverlays(.hidden)
+        .sheet(isPresented: $showShareSheet) {
+            ShareSheet(items: [capturedImage])
+                .presentationDetents([.medium, .large])
         }
     }
+    
     // MARK: - Helper Functions
     // Adds the scanned item to RecyclingManager and shows success feedback
     private func addToCollection() {
@@ -360,6 +369,23 @@ struct WasteScannerResultView: View {
     // Gets point value for detected item type
     private func getPointValue() -> Int {
         return mapToRecyclableType().pointValue
+    }
+}
+
+// MARK: - ShareSheet UIViewControllerRepresentable
+struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(
+            activityItems: items,
+            applicationActivities: nil
+        )
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {
+        // No update needed
     }
 }
     

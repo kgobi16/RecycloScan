@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FA38E2942EA7570900BCE2B4 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA38E2932EA7570800BCE2B4 /* WidgetKit.framework */; };
+		FA38E2962EA7570900BCE2B4 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA38E2952EA7570900BCE2B4 /* SwiftUI.framework */; };
+		FA38E2A52EA7570900BCE2B4 /* RecycloScanWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FA38E2912EA7570800BCE2B4 /* RecycloScanWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F22FB4C02E97C6B7007B6ED7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,12 +27,37 @@
 			remoteGlobalIDString = F22FB4B12E97C6B6007B6ED7;
 			remoteInfo = RecycloScan;
 		};
+		FA38E2A32EA7570900BCE2B4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F22FB4AA2E97C6B6007B6ED7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA38E2902EA7570800BCE2B4;
+			remoteInfo = RecycloScanWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FA38E2AA2EA7570900BCE2B4 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				FA38E2A52EA7570900BCE2B4 /* RecycloScanWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		F22FB4B22E97C6B6007B6ED7 /* RecycloScan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecycloScan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F22FB4BF2E97C6B7007B6ED7 /* RecycloScanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecycloScanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F22FB4C92E97C6B7007B6ED7 /* RecycloScanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecycloScanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA38E2912EA7570800BCE2B4 /* RecycloScanWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = RecycloScanWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA38E2932EA7570800BCE2B4 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		FA38E2952EA7570900BCE2B4 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		FA38E2AC2EA758EB00BCE2B4 /* RecycloScanWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RecycloScanWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -37,6 +68,20 @@
 			);
 			target = F22FB4B12E97C6B6007B6ED7 /* RecycloScan */;
 		};
+		FA38E2A92EA7570900BCE2B4 /* Exceptions for "RecycloScanWidget" folder in "RecycloScanWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = FA38E2902EA7570800BCE2B4 /* RecycloScanWidgetExtension */;
+		};
+		FA38E2B32EA75CD500BCE2B4 /* Exceptions for "RecycloScan" folder in "RecycloScanWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				WidgetData.swift,
+			);
+			target = FA38E2902EA7570800BCE2B4 /* RecycloScanWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +89,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				F2C0497B2E9F34D200264E0B /* Exceptions for "RecycloScan" folder in "RecycloScan" target */,
+				FA38E2B32EA75CD500BCE2B4 /* Exceptions for "RecycloScan" folder in "RecycloScanWidgetExtension" target */,
 			);
 			path = RecycloScan;
 			sourceTree = "<group>";
@@ -56,6 +102,14 @@
 		F22FB4CC2E97C6B7007B6ED7 /* RecycloScanUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = RecycloScanUITests;
+			sourceTree = "<group>";
+		};
+		FA38E2972EA7570900BCE2B4 /* RecycloScanWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FA38E2A92EA7570900BCE2B4 /* Exceptions for "RecycloScanWidget" folder in "RecycloScanWidgetExtension" target */,
+			);
+			path = RecycloScanWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -82,15 +136,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA38E28E2EA7570800BCE2B4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA38E2962EA7570900BCE2B4 /* SwiftUI.framework in Frameworks */,
+				FA38E2942EA7570900BCE2B4 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		F22FB4A92E97C6B6007B6ED7 = {
 			isa = PBXGroup;
 			children = (
+				FA38E2AC2EA758EB00BCE2B4 /* RecycloScanWidgetExtension.entitlements */,
 				F22FB4B42E97C6B6007B6ED7 /* RecycloScan */,
 				F22FB4C22E97C6B7007B6ED7 /* RecycloScanTests */,
 				F22FB4CC2E97C6B7007B6ED7 /* RecycloScanUITests */,
+				FA38E2972EA7570900BCE2B4 /* RecycloScanWidget */,
+				FA38E2922EA7570800BCE2B4 /* Frameworks */,
 				F22FB4B32E97C6B6007B6ED7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -101,8 +167,18 @@
 				F22FB4B22E97C6B6007B6ED7 /* RecycloScan.app */,
 				F22FB4BF2E97C6B7007B6ED7 /* RecycloScanTests.xctest */,
 				F22FB4C92E97C6B7007B6ED7 /* RecycloScanUITests.xctest */,
+				FA38E2912EA7570800BCE2B4 /* RecycloScanWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		FA38E2922EA7570800BCE2B4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FA38E2932EA7570800BCE2B4 /* WidgetKit.framework */,
+				FA38E2952EA7570900BCE2B4 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -115,10 +191,12 @@
 				F22FB4AE2E97C6B6007B6ED7 /* Sources */,
 				F22FB4AF2E97C6B6007B6ED7 /* Frameworks */,
 				F22FB4B02E97C6B6007B6ED7 /* Resources */,
+				FA38E2AA2EA7570900BCE2B4 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FA38E2A42EA7570900BCE2B4 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F22FB4B42E97C6B6007B6ED7 /* RecycloScan */,
@@ -176,6 +254,28 @@
 			productReference = F22FB4C92E97C6B7007B6ED7 /* RecycloScanUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		FA38E2902EA7570800BCE2B4 /* RecycloScanWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA38E2A62EA7570900BCE2B4 /* Build configuration list for PBXNativeTarget "RecycloScanWidgetExtension" */;
+			buildPhases = (
+				FA38E28D2EA7570800BCE2B4 /* Sources */,
+				FA38E28E2EA7570800BCE2B4 /* Frameworks */,
+				FA38E28F2EA7570800BCE2B4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				FA38E2972EA7570900BCE2B4 /* RecycloScanWidget */,
+			);
+			name = RecycloScanWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = RecycloScanWidgetExtension;
+			productReference = FA38E2912EA7570800BCE2B4 /* RecycloScanWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -197,6 +297,9 @@
 						CreatedOnToolsVersion = 16.4;
 						TestTargetID = F22FB4B12E97C6B6007B6ED7;
 					};
+					FA38E2902EA7570800BCE2B4 = {
+						CreatedOnToolsVersion = 16.4;
+					};
 				};
 			};
 			buildConfigurationList = F22FB4AD2E97C6B6007B6ED7 /* Build configuration list for PBXProject "RecycloScan" */;
@@ -216,6 +319,7 @@
 				F22FB4B12E97C6B6007B6ED7 /* RecycloScan */,
 				F22FB4BE2E97C6B7007B6ED7 /* RecycloScanTests */,
 				F22FB4C82E97C6B7007B6ED7 /* RecycloScanUITests */,
+				FA38E2902EA7570800BCE2B4 /* RecycloScanWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -236,6 +340,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		F22FB4C72E97C6B7007B6ED7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA38E28F2EA7570800BCE2B4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -266,6 +377,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA38E28D2EA7570800BCE2B4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -278,6 +396,11 @@
 			isa = PBXTargetDependency;
 			target = F22FB4B12E97C6B6007B6ED7 /* RecycloScan */;
 			targetProxy = F22FB4CA2E97C6B7007B6ED7 /* PBXContainerItemProxy */;
+		};
+		FA38E2A42EA7570900BCE2B4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA38E2902EA7570800BCE2B4 /* RecycloScanWidgetExtension */;
+			targetProxy = FA38E2A32EA7570900BCE2B4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -406,6 +529,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RecycloScan/RecycloScan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P7PL5J4AMN;
@@ -436,6 +560,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RecycloScan/RecycloScan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = P7PL5J4AMN;
@@ -529,6 +654,62 @@
 			};
 			name = Release;
 		};
+		FA38E2A72EA7570900BCE2B4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = RecycloScanWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P7PL5J4AMN;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecycloScanWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecycloScanWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScan.RecycloScanWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FA38E2A82EA7570900BCE2B4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = RecycloScanWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P7PL5J4AMN;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RecycloScanWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = RecycloScanWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScan.RecycloScanWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -564,6 +745,15 @@
 			buildConfigurations = (
 				F22FB4DA2E97C6B7007B6ED7 /* Debug */,
 				F22FB4DB2E97C6B7007B6ED7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA38E2A62EA7570900BCE2B4 /* Build configuration list for PBXNativeTarget "RecycloScanWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA38E2A72EA7570900BCE2B4 /* Debug */,
+				FA38E2A82EA7570900BCE2B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

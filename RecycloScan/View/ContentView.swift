@@ -29,7 +29,7 @@ struct ContentView: View {
             
             // Scan Tab (Ariel's)
             //ScanPlaceholderView()
-            WasteScannerView()
+            WasteScannerView(recyclingManager: recyclingManager)
                 .tabItem {
                     Label("Scan", systemImage: "camera.fill")
                 }

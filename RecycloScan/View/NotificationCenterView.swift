@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct NotificationCenterView: View {
     @ObservedObject var viewModel: NotificationManagerVM
@@ -196,6 +197,9 @@ struct NotificationCard: View {
     let onYes: () -> Void
     let onNo: () -> Void
     
+    @State private var isLongPressing = false
+    @State private var showingQuickActions = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // Header
@@ -217,6 +221,14 @@ struct NotificationCard: View {
             Text(notification.message)
                 .bodyMediumStyle()
             
+            // Quick Action Hint for pending notifications
+            if notification.response == .pending {
+                Text("💡 Tip: Tap and hold for quick actions")
+                    .captionStyle()
+                    .foregroundColor(.TextSecondary)
+                    .italic()
+            }
+            
             // Bin Type Badge (if applicable)
             if let binType = notification.binType {
                 HStack(spacing: 8) {
@@ -235,43 +247,139 @@ struct NotificationCard: View {
             
             // Action Buttons (only for pending)
             if notification.response == .pending {
-                HStack(spacing: 12) {
-                    Button(action: onNo) {
-                        Label("No", systemImage: "xmark")
-                            .font(.bodyMedium)
-                            .foregroundColor(.TextSecondary)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(Color.BackgroundBeige)
-                            .cornerRadius(12)
-                    }
-                    
-                    Button(action: onYes) {
-                        Label("Yes", systemImage: "checkmark")
-                            .font(.bodyMedium)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(Color.ForestGreen)
-                            .cornerRadius(12)
-                    }
+                if showingQuickActions {
+                    // Quick action buttons from long press
+                    quickActionButtons
+                } else {
+                    // Regular action buttons
+                    regularActionButtons
                 }
             } else {
                 // Response Badge
-                HStack {
-                    Image(systemName: notification.response == .yes ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .foregroundColor(notification.response == .yes ? .ForestGreen : .TextSecondary)
-                    
-                    Text(notification.response.displayText)
-                        .bodySmallStyle()
-                        .foregroundColor(notification.response == .yes ? .ForestGreen : .TextSecondary)
-                }
+                responseStatusBadge
             }
         }
         .padding()
         .background(Color.SurfaceWhite)
         .cornerRadius(16)
         .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
+        .scaleEffect(isLongPressing ? 1.05 : 1.0)
+        .animation(.easeInOut(duration: 0.2), value: isLongPressing)
+        .onLongPressGesture(minimumDuration: 0.5, maximumDistance: 50) {
+            // Long press detected
+            if notification.response == .pending {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    showingQuickActions.toggle()
+                }
+                
+                // Haptic feedback
+                let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+                impactFeedback.impactOccurred()
+            }
+        } onPressingChanged: { pressing in
+            withAnimation(.easeInOut(duration: 0.1)) {
+                isLongPressing = pressing
+            }
+        }
+    }
+    
+    // MARK: - Regular Action Buttons
+    private var regularActionButtons: some View {
+        HStack(spacing: 12) {
+            Button(action: onNo) {
+                Label("No", systemImage: "xmark")
+                    .font(.bodyMedium)
+                    .foregroundColor(.TextSecondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color.BackgroundBeige)
+                    .cornerRadius(12)
+            }
+            
+            Button(action: onYes) {
+                Label("Yes", systemImage: "checkmark")
+                    .font(.bodyMedium)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color.ForestGreen)
+                    .cornerRadius(12)
+            }
+        }
+    }
+    
+    // MARK: - Quick Action Buttons
+    private var quickActionButtons: some View {
+        VStack(spacing: 12) {
+            // Enhanced Yes button with emoji
+            Button(action: {
+                withAnimation {
+                    showingQuickActions = false
+                }
+                onYes()
+            }) {
+                HStack {
+                    Text("✅")
+                        .font(.title2)
+                    Text("Bin is outside!")
+                        .font(.bodyMedium)
+                        .fontWeight(.semibold)
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(Color.ForestGreen)
+                .cornerRadius(12)
+            }
+            
+            // Enhanced No button with emoji
+            Button(action: {
+                withAnimation {
+                    showingQuickActions = false
+                }
+                onNo()
+            }) {
+                HStack {
+                    Text("❌")
+                        .font(.title2)
+                    Text("Missed this time")
+                        .font(.bodyMedium)
+                        .fontWeight(.semibold)
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(Color.EWasteRed)
+                .cornerRadius(12)
+            }
+            
+            // Cancel button
+            Button(action: {
+                withAnimation {
+                    showingQuickActions = false
+                }
+            }) {
+                Text("Cancel")
+                    .font(.bodyMedium)
+                    .foregroundColor(.TextSecondary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color.BackgroundBeige)
+                    .cornerRadius(12)
+            }
+        }
+    }
+    
+    // MARK: - Response Status Badge
+    private var responseStatusBadge: some View {
+        HStack {
+            Image(systemName: notification.response == .yes ? "checkmark.circle.fill" : "xmark.circle.fill")
+                .foregroundColor(notification.response == .yes ? .ForestGreen : .TextSecondary)
+            
+            Text(notification.response.displayText)
+                .bodySmallStyle()
+                .foregroundColor(notification.response == .yes ? .ForestGreen : .TextSecondary)
+        }
     }
     
     private var iconColor: Color {
@@ -283,6 +391,7 @@ struct NotificationCard: View {
         }
     }
 }
+
 
 // MARK: - Stat Item
 struct StatItem: View {

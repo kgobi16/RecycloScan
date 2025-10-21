@@ -15,9 +15,43 @@
 import Foundation
 import SwiftUI
 
+// Statistics tracking for individual bin types
+struct BinStats: Codable {
+    var completedPickups: Int = 0
+    var missedPickups: Int = 0
+    var currentStreak: Int = 0
+    var bestStreak: Int = 0
+    var totalPointsEarned: Int = 0
+    var lastPickupDate: Date?
+    
+    var completionRate: Double {
+        let total = completedPickups + missedPickups
+        return total > 0 ? Double(completedPickups) / Double(total) : 0.0
+    }
+    
+    mutating func recordCompletion(points: Int = 10) {
+        completedPickups += 1
+        currentStreak += 1
+        totalPointsEarned += points
+        lastPickupDate = Date()
+        
+        if currentStreak > bestStreak {
+            bestStreak = currentStreak
+        }
+    }
+    
+    mutating func recordMissed() {
+        missedPickups += 1
+        currentStreak = 0
+    }
+}
+
 class PickupSchedulerVM: ObservableObject {
     @Published var pickupSchedule: PickupSchedule
     @Published var isLoading: Bool = false
+    
+    // Statistics tracking
+    @Published var binCompletionStats: [BinType: BinStats] = [:]
     
     // Reference to Yu's: RecyclingManager for gamification integration
     private var recyclingManager: RecyclingManager?
@@ -34,6 +68,16 @@ class PickupSchedulerVM: ObservableObject {
             self.pickupSchedule = savedSchedule
         } else {
             self.pickupSchedule = PickupSchedule()
+        }
+        
+        // Load statistics
+        loadBinStats()
+        
+        // Initialize stats for all bin types if not present
+        for binType in BinType.allCases {
+            if binCompletionStats[binType] == nil {
+                binCompletionStats[binType] = BinStats()
+            }
         }
     }
     
@@ -124,11 +168,69 @@ class PickupSchedulerVM: ObservableObject {
         print("🔕 Cancelled all bin reminder notifications")
     }
     
+    //MARK: - Statistics Management
+    
+    // Record that bins were successfully put out
+    func recordBinCompletion(for binTypes: [BinType], points: Int = 10) {
+        for binType in binTypes {
+            binCompletionStats[binType]?.recordCompletion(points: points)
+        }
+        saveBinStats()
+    }
+    
+    // Record that bins were missed
+    func recordBinMissed(for binTypes: [BinType]) {
+        for binType in binTypes {
+            binCompletionStats[binType]?.recordMissed()
+        }
+        saveBinStats()
+    }
+    
+    // Get statistics for a specific bin type
+    func getStats(for binType: BinType) -> BinStats {
+        return binCompletionStats[binType] ?? BinStats()
+    }
+    
+    // Get total points earned across all bins
+    func getTotalPointsEarned() -> Int {
+        return binCompletionStats.values.reduce(0) { $0 + $1.totalPointsEarned }
+    }
+    
+    // Get total completed pickups across all bins
+    func getTotalCompletedPickups() -> Int {
+        return binCompletionStats.values.reduce(0) { $0 + $1.completedPickups }
+    }
+    
+    // Get total missed pickups across all bins
+    func getTotalMissedPickups() -> Int {
+        return binCompletionStats.values.reduce(0) { $0 + $1.missedPickups }
+    }
+    
+    // Get overall completion rate
+    func getOverallCompletionRate() -> Double {
+        let totalCompleted = getTotalCompletedPickups()
+        let totalMissed = getTotalMissedPickups()
+        let total = totalCompleted + totalMissed
+        return total > 0 ? Double(totalCompleted) / Double(total) : 0.0
+    }
+    
+    // Get best streak across all bins
+    func getBestStreak() -> Int {
+        return binCompletionStats.values.map { $0.bestStreak }.max() ?? 0
+    }
+    
+    // Get current active streaks
+    func getCurrentStreaks() -> [BinType: Int] {
+        return binCompletionStats.mapValues { $0.currentStreak }
+    }
+    
     //Integration with RecyclingManager Will update when Yu finshes her section
     
     //Confirm that bins were put out (for gamification)
     func confirmBinsPutOut(for binTypes: [BinType], on date: Date) {
-        // This could award points or track completion
+        // Record completion in statistics
+        recordBinCompletion(for: binTypes, points: 10)
+        
         print("✅ Bins put out: \(binTypes.map { $0.displayName }.joined(separator: ", "))")
         
         // integration with RecyclingManager for points
@@ -154,6 +256,23 @@ class PickupSchedulerVM: ObservableObject {
         }
     }
     
+    private func saveBinStats() {
+        if let encoded = try? JSONEncoder().encode(binCompletionStats) {
+            UserDefaults.standard.set(encoded, forKey: "binCompletionStats")
+            print("📊 Bin statistics saved")
+        }
+    }
+    
+    private func loadBinStats() {
+        guard let data = UserDefaults.standard.data(forKey: "binCompletionStats"),
+              let stats = try? JSONDecoder().decode([BinType: BinStats].self, from: data) else {
+            print("📊 No saved bin statistics found")
+            return
+        }
+        binCompletionStats = stats
+        print("📊 Bin statistics loaded")
+    }
+    
     private static func loadScheduleFromUserDefaults() -> PickupSchedule? {
         guard let data = UserDefaults.standard.data(forKey: "pickupSchedule"),
               let schedule = try? JSONDecoder().decode(PickupSchedule.self, from: data) else {
@@ -166,7 +285,15 @@ class PickupSchedulerVM: ObservableObject {
     //Clear all saved data (useful for testing)
     func clearAllData() {
         UserDefaults.standard.removeObject(forKey: "pickupSchedule")
+        UserDefaults.standard.removeObject(forKey: "binCompletionStats")
         pickupSchedule = PickupSchedule()
+        binCompletionStats = [:]
+        
+        // Initialize fresh stats
+        for binType in BinType.allCases {
+            binCompletionStats[binType] = BinStats()
+        }
+        
         cancelAllNotifications()
         print("🗑️ All pickup data cleared")
     }
@@ -200,6 +327,43 @@ extension PickupSchedulerVM {
         scheduler.updatePickupDays(for: .yellow, days: [.wednesday])
         scheduler.updatePickupDays(for: .blue, days: [.tuesday, .friday])
         scheduler.updatePickupDays(for: .green, days: [.friday])
+        
+        // Add sample statistics
+        scheduler.binCompletionStats[.red] = BinStats(
+            completedPickups: 8,
+            missedPickups: 2,
+            currentStreak: 3,
+            bestStreak: 5,
+            totalPointsEarned: 80,
+            lastPickupDate: Calendar.current.date(byAdding: .day, value: -3, to: Date())
+        )
+        
+        scheduler.binCompletionStats[.yellow] = BinStats(
+            completedPickups: 12,
+            missedPickups: 1,
+            currentStreak: 7,
+            bestStreak: 7,
+            totalPointsEarned: 120,
+            lastPickupDate: Calendar.current.date(byAdding: .day, value: -1, to: Date())
+        )
+        
+        scheduler.binCompletionStats[.blue] = BinStats(
+            completedPickups: 6,
+            missedPickups: 4,
+            currentStreak: 0,
+            bestStreak: 4,
+            totalPointsEarned: 60,
+            lastPickupDate: Calendar.current.date(byAdding: .day, value: -7, to: Date())
+        )
+        
+        scheduler.binCompletionStats[.green] = BinStats(
+            completedPickups: 5,
+            missedPickups: 1,
+            currentStreak: 2,
+            bestStreak: 4,
+            totalPointsEarned: 50,
+            lastPickupDate: Calendar.current.date(byAdding: .day, value: -5, to: Date())
+        )
         
         return scheduler
     }

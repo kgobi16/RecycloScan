@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 struct PickupAppointmentView: View {
     @ObservedObject var viewModel: PickupSchedulerVM
@@ -40,7 +41,9 @@ struct PickupAppointmentView: View {
                                     schedule: viewModel.pickupSchedule.schedule(for: binType),
                                     onTap: {
                                         selectedBin = binType
-                                        showingBinEditor = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                            showingBinEditor = true
+                                        }
                                     },
                                     onToggle: {
                                         viewModel.toggleBinSchedule(for: binType)
@@ -64,6 +67,7 @@ struct PickupAppointmentView: View {
                         viewModel: viewModel,
                         isPresented: $showingBinEditor
                     )
+                    .id(binType.rawValue)
                 }
             }
         }
@@ -344,6 +348,8 @@ struct BinScheduleEditorSheet: View {
     @Binding var isPresented: Bool
     
     @State private var selectedDays: Set<WeekDay> = []
+    @State private var reminderHours: Double = 12.0
+    @State private var showingTestNotificationAlert = false
     
     var body: some View {
         NavigationView {
@@ -351,75 +357,41 @@ struct BinScheduleEditorSheet: View {
                 Color.BackgroundBeige
                     .ignoresSafeArea()
                 
-                VStack(spacing: 24) {
-                    // Bin Info
-                    VStack(spacing: 12) {
-                        Circle()
-                            .fill(binType.color)
-                            .frame(width: 80, height: 80)
-                            .overlay(
-                                Image(systemName: binType.icon)
-                                    .font(.system(size: 40))
-                                    .foregroundColor(.white)
-                            )
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Bin Info Header
+                        binInfoHeader
                         
-                        Text(binType.displayName)
-                            .displayMediumStyle()
+                        // Statistics Card
+                        statisticsCard
                         
-                        Text(binType.wasteType)
-                            .bodyMediumStyle()
-                    }
-                    .padding()
-                    
-                    // Day Selector
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Select Pickup Days")
-                            .headingMediumStyle()
-                            .padding(.horizontal)
+                        // Day Selector
+                        daySelector
                         
-                        VStack(spacing: 12) {
-                            ForEach(WeekDay.allCases) { day in
-                                DaySelectorRow(
-                                    day: day,
-                                    isSelected: selectedDays.contains(day),
-                                    color: binType.color,
-                                    onTap: {
-                                        if selectedDays.contains(day) {
-                                            selectedDays.remove(day)
-                                        } else {
-                                            selectedDays.insert(day)
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                        .padding()
-                        .background(Color.SurfaceWhite)
-                        .cornerRadius(16)
-                        .padding(.horizontal)
-                    }
-                    
-                    Spacer()
-                    
-                    // Save Button
-                    Button(action: saveDays) {
-                        Text("Save Schedule")
-                            .font(.buttonLarge)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(binType.color)
-                            .cornerRadius(16)
+                        // Notification Settings
+                        notificationSettingsSection
+                        
+                        // Test Notification Button
+                        testNotificationButton
+                        
+                        Spacer(minLength: 100)
                     }
                     .padding()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
                         isPresented = false
                     }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Save") {
+                        saveDays()
+                    }
+                    .fontWeight(.semibold)
                 }
             }
         }
@@ -427,12 +399,310 @@ struct BinScheduleEditorSheet: View {
             if let schedule = viewModel.pickupSchedule.schedule(for: binType) {
                 selectedDays = Set(schedule.pickupDays)
             }
+            // Load reminder time
+            reminderHours = viewModel.pickupSchedule.reminderTimeBeforePickup / 3600 // Convert seconds to hours
+        }
+    }
+    
+    // MARK: - Bin Info Header
+    private var binInfoHeader: some View {
+        VStack(spacing: 12) {
+            Circle()
+                .fill(binType.color)
+                .frame(width: 80, height: 80)
+                .overlay(
+                    Image(systemName: binType.icon)
+                        .font(.system(size: 40))
+                        .foregroundColor(.white)
+                )
+            
+            Text(binType.displayName)
+                .displayMediumStyle()
+            
+            Text(binType.wasteType)
+                .bodyMediumStyle()
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+    }
+    
+    // MARK: - Statistics Card
+    private var statisticsCard: some View {
+        let stats = viewModel.getStats(for: binType)
+        
+        return VStack(spacing: 12) {
+            Text("Your Statistics")
+                .headingMediumStyle()
+            
+            // Top Row Stats
+            HStack(spacing: 12) {
+                StatBox(
+                    title: "Total Points",
+                    value: "\(stats.totalPointsEarned)",
+                    icon: "star.fill",
+                    color: .WarmOrange
+                )
+                
+                StatBox(
+                    title: "Current Streak",
+                    value: "\(stats.currentStreak)",
+                    icon: "flame.fill",
+                    color: .BinRed
+                )
+                
+                StatBox(
+                    title: "Best Streak",
+                    value: "\(stats.bestStreak)",
+                    icon: "trophy.fill",
+                    color: .ForestGreen
+                )
+            }
+            
+            // Bottom Row Stats
+            HStack(spacing: 12) {
+                StatBox(
+                    title: "Completed",
+                    value: "\(stats.completedPickups)",
+                    icon: "checkmark.circle.fill",
+                    color: .GrassGreen
+                )
+                
+                StatBox(
+                    title: "Missed",
+                    value: "\(stats.missedPickups)",
+                    icon: "xmark.circle.fill",
+                    color: .EWasteRed
+                )
+                
+                StatBox(
+                    title: "Success Rate",
+                    value: "\(Int(stats.completionRate * 100))%",
+                    icon: "chart.line.uptrend.xyaxis",
+                    color: binType.color
+                )
+            }
+            
+            // Last Pickup Info
+            if let lastPickup = stats.lastPickupDate {
+                VStack(spacing: 4) {
+                    Text("Last Pickup")
+                        .captionStyle()
+                    Text(formatDate(lastPickup))
+                        .bodySmallStyle()
+                        .foregroundColor(.ForestGreen)
+                }
+                .padding(.top, 8)
+            }
+        }
+        .padding()
+        .background(Color.SurfaceWhite)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+    }
+    
+    // MARK: - Day Selector
+    private var daySelector: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Select Pickup Days")
+                .headingMediumStyle()
+            
+            VStack(spacing: 12) {
+                ForEach(WeekDay.allCases) { day in
+                    DaySelectorRow(
+                        day: day,
+                        isSelected: selectedDays.contains(day),
+                        color: binType.color,
+                        onTap: {
+                            if selectedDays.contains(day) {
+                                selectedDays.remove(day)
+                            } else {
+                                selectedDays.insert(day)
+                            }
+                        }
+                    )
+                }
+            }
+        }
+        .padding()
+        .background(Color.SurfaceWhite)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+    }
+    
+    // MARK: - Notification Settings Section
+    private var notificationSettingsSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Notification Settings")
+                .headingMediumStyle()
+            
+            VStack(spacing: 16) {
+                // Reminder time slider
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("Remind me")
+                            .bodyMediumStyle()
+                        
+                        Spacer()
+                        
+                        Text("\(Int(reminderHours)) hours before")
+                            .font(.buttonMedium)
+                            .foregroundColor(binType.color)
+                    }
+                    
+                    Slider(value: $reminderHours, in: 1...24, step: 1)
+                        .tint(binType.color)
+                    
+                    HStack {
+                        Text("1 hour")
+                            .captionStyle()
+                        Spacer()
+                        Text("24 hours")
+                            .captionStyle()
+                    }
+                }
+                .padding()
+                .background(Color.BackgroundBeige.opacity(0.5))
+                .cornerRadius(12)
+                
+                Text("You'll receive a notification \(Int(reminderHours)) hours before your bin collection day.")
+                    .captionStyle()
+                    .foregroundColor(.TextSecondary)
+            }
+        }
+        .padding()
+        .background(Color.SurfaceWhite)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+    }
+    
+    // MARK: - Test Notification Button
+    private var testNotificationButton: some View {
+        VStack(spacing: 12) {
+            Button(action: {
+                sendTestNotification()
+            }) {
+                HStack {
+                    Image(systemName: "bell.badge.fill")
+                        .font(.system(size: 20))
+                    
+                    Text("Send Test Notification")
+                        .font(.buttonMedium)
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .background(binType.color)
+                .cornerRadius(12)
+            }
+            
+            Text("📱 This unique feature tests if notifications are set up correctly.\nYou'll receive a notification within 15 seconds.\n\n💡 Press and hold (or swipe) the notification to see Yes/No action buttons!")
+                .captionStyle()
+                .foregroundColor(.TextSecondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+        .background(Color.SurfaceWhite)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .alert("Test Notification Sent!", isPresented: $showingTestNotificationAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Check your notifications in 15 seconds!\n\nPress and hold (or swipe left) on the notification to reveal the Yes/No action buttons to confirm everything is working correctly!")
         }
     }
     
     private func saveDays() {
         viewModel.updatePickupDays(for: binType, days: Array(selectedDays))
+        viewModel.updateReminderTime(hours: reminderHours)
         isPresented = false
+    }
+    
+    private func sendTestNotification() {
+        // Request notification permission first
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                // Setup notification categories with actions
+                let yesAction = UNNotificationAction(
+                    identifier: "TEST_YES",
+                    title: "✅ Yes, it works!",
+                    options: [.foreground]
+                )
+                
+                let noAction = UNNotificationAction(
+                    identifier: "TEST_NO",
+                    title: "❌ Not working",
+                    options: []
+                )
+                
+                let testCategory = UNNotificationCategory(
+                    identifier: "TEST_NOTIFICATION",
+                    actions: [yesAction, noAction],
+                    intentIdentifiers: [],
+                    options: []
+                )
+                
+                UNUserNotificationCenter.current().setNotificationCategories([testCategory])
+                
+                // Schedule test notification for 15 seconds from now
+                let content = UNMutableNotificationContent()
+                content.title = "Test Notification - \(binType.displayName)"
+                content.body = "Great! Your notifications are working correctly. You'll be reminded before your \(binType.displayName.lowercased()) collection day."
+                content.sound = .default
+                content.categoryIdentifier = "TEST_NOTIFICATION"
+                
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 15, repeats: false)
+                let request = UNNotificationRequest(
+                    identifier: "test-notification-\(UUID().uuidString)",
+                    content: content,
+                    trigger: trigger
+                )
+                
+                UNUserNotificationCenter.current().add(request) { error in
+                    DispatchQueue.main.async {
+                        if error == nil {
+                            showingTestNotificationAlert = true
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+}
+
+// MARK: - StatBox Component
+struct StatBox: View {
+    let title: String
+    let value: String
+    let icon: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundColor(color)
+            
+            Text(value)
+                .font(.system(size: 18, weight: .bold))
+                .foregroundColor(.TextPrimary)
+            
+            Text(title)
+                .font(.system(size: 10))
+                .foregroundColor(.TextSecondary)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 8)
+        .background(color.opacity(0.1))
+        .cornerRadius(10)
     }
 }
 
@@ -447,19 +717,13 @@ struct DaySelectorRow: View {
         Button(action: onTap) {
             HStack {
                 Text(day.fullName)
-                    .bodyLargeStyle()
+                    .bodyMediumStyle()
                 
                 Spacer()
                 
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 24))
-                        .foregroundColor(color)
-                } else {
-                    Image(systemName: "circle")
-                        .font(.system(size: 24))
-                        .foregroundColor(.TextSecondary)
-                }
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 20))
+                    .foregroundColor(isSelected ? color : .TextSecondary)
             }
             .padding()
             .background(isSelected ? color.opacity(0.1) : Color.clear)

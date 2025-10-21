@@ -9,7 +9,7 @@ import Foundation
 import UserNotifications
 import SwiftUI
 
-class NotificationManagerVM: ObservableObject {
+class NotificationManagerVM: NSObject, ObservableObject {
     @Published var notifications: [NotificationItem] = []
     @Published var notificationPermissionGranted: Bool = false
     @Published var recentTipIDs: [UUID] = [] // Track recent tips to avoid repeats
@@ -24,6 +24,8 @@ class NotificationManagerVM: ObservableObject {
         self.pickupScheduler = pickupScheduler
         self.recyclingManager = recyclingManager
         
+        super.init()
+        
         loadNotifications()
         checkNotificationPermission()
     }
@@ -37,17 +39,67 @@ class NotificationManagerVM: ObservableObject {
                 self.notificationPermissionGranted = granted
                 
                 if granted {
-                    print("✅ Notification permission granted")
+                    print("📱 Notification permission granted")
+                    self.setupNotificationCategories()
                     self.scheduleAllNotifications()
                 } else {
                     print("❌ Notification permission denied")
-                }
-                
-                if let error = error {
-                    print("⚠️ Notification permission error: \(error.localizedDescription)")
+                    if let error = error {
+                        print("Error: \(error.localizedDescription)")
+                    }
                 }
             }
         }
+    }
+    
+    /// Setup interactive notification categories with actions
+    private func setupNotificationCategories() {
+        // Actions for bin reminder notifications
+        let yesAction = UNNotificationAction(
+            identifier: "BIN_YES",
+            title: "✅ Put Out",
+            options: [.foreground]
+        )
+        
+        let noAction = UNNotificationAction(
+            identifier: "BIN_NO", 
+            title: "❌ Missed",
+            options: []
+        )
+        
+        // Category for bin reminders
+        let binReminderCategory = UNNotificationCategory(
+            identifier: "BIN_REMINDER",
+            actions: [yesAction, noAction],
+            intentIdentifiers: [],
+            options: []
+        )
+        
+        // Actions for weekly tips
+        let dismissAction = UNNotificationAction(
+            identifier: "TIP_DISMISS",
+            title: "Got it!",
+            options: []
+        )
+        
+        // Category for weekly tips
+        let weeklyTipCategory = UNNotificationCategory(
+            identifier: "WEEKLY_TIP",
+            actions: [dismissAction],
+            intentIdentifiers: [],
+            options: []
+        )
+        
+        // Register categories
+        UNUserNotificationCenter.current().setNotificationCategories([
+            binReminderCategory,
+            weeklyTipCategory
+        ])
+        
+        // Set delegate to handle responses
+        UNUserNotificationCenter.current().delegate = self
+        
+        print("📱 Notification categories set up")
     }
     
     /// Check current notification permission status
@@ -187,23 +239,28 @@ class NotificationManagerVM: ObservableObject {
         
         let content = UNMutableNotificationContent()
         content.title = notification.title
-        content.body = notification.message
         content.sound = .default
         
-        // Add category badge
-        if notification.type == .binReminder {
-            content.badge = 1
+        // Enhanced body message with bin status prompt
+        if notification.type == .binReminder, let binType = notification.binType {
+            content.body = "\(notification.message)\n\nTap to confirm if you put your bin outside."
+            content.categoryIdentifier = "BIN_REMINDER"
+        } else {
+            content.body = notification.message
+            content.categoryIdentifier = "WEEKLY_TIP"
         }
         
-        // Custom data for handling response
+        // Add custom data for handling response
         content.userInfo = [
-            "notificationID": notification.id.uuidString,
+            "notificationId": notification.id.uuidString,
+            "binType": notification.binType?.rawValue ?? "",
             "type": notification.type.rawValue
         ]
         
         // Create trigger
-        let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: notification.scheduledDate)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: notification.scheduledDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         
         // Create request
         let request = UNNotificationRequest(
@@ -212,12 +269,12 @@ class NotificationManagerVM: ObservableObject {
             trigger: trigger
         )
         
-        // Schedule
+        // Schedule notification
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("⚠️ Error scheduling notification: \(error.localizedDescription)")
+                print("❌ Failed to schedule notification: \(error.localizedDescription)")
             } else {
-                print("✅ iOS notification scheduled: \(notification.title)")
+                print("📱 iOS notification scheduled for \(notification.formattedScheduledDate)")
             }
         }
     }
@@ -358,6 +415,76 @@ class NotificationManagerVM: ObservableObject {
     
     public func setRecyclingManager(_ manager: RecyclingManager) {
         self.recyclingManager = manager
+    }
+}
+
+// MARK: - UNUserNotificationCenterDelegate
+extension NotificationManagerVM: UNUserNotificationCenterDelegate {
+    
+    /// Handle notification response (when user taps action buttons)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        let userInfo = response.notification.request.content.userInfo
+        
+        guard let notificationIdString = userInfo["notificationId"] as? String,
+              let notificationId = UUID(uuidString: notificationIdString),
+              let notificationIndex = notifications.firstIndex(where: { $0.id == notificationId }) else {
+            completionHandler()
+            return
+        }
+        
+        let notification = notifications[notificationIndex]
+        
+        switch response.actionIdentifier {
+        case "BIN_YES":
+            // User confirmed they put out the bin
+            DispatchQueue.main.async {
+                self.markAsCompleted(notification)
+                
+                // Record completion in pickup scheduler if available
+                if let binTypeString = userInfo["binType"] as? String,
+                   let binType = BinType(rawValue: binTypeString) {
+                    self.pickupScheduler?.recordBinCompletion(for: [binType], points: 10)
+                }
+            }
+            print("✅ User confirmed bin was put out")
+            
+        case "BIN_NO":
+            // User missed putting out the bin
+            DispatchQueue.main.async {
+                self.markAsMissed(notification)
+                
+                // Record missed in pickup scheduler if available
+                if let binTypeString = userInfo["binType"] as? String,
+                   let binType = BinType(rawValue: binTypeString) {
+                    self.pickupScheduler?.recordBinMissed(for: [binType])
+                }
+            }
+            print("❌ User confirmed bin was missed")
+            
+        case "TIP_DISMISS":
+            // User acknowledged the tip
+            DispatchQueue.main.async {
+                self.markAsCompleted(notification)
+            }
+            print("💡 User acknowledged weekly tip")
+            
+        case UNNotificationDefaultActionIdentifier:
+            // User tapped the notification itself (not an action button)
+            print("📱 User tapped notification")
+            
+        default:
+            break
+        }
+        
+        completionHandler()
+    }
+    
+    /// Handle notification when app is in foreground
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        // Show notification even when app is in foreground
+        completionHandler([.banner, .sound, .badge])
     }
 }
 

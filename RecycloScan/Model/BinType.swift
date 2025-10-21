@@ -44,13 +44,13 @@ enum BinType: String, Codable, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .red:
-            return .BinBlue  // Fix: BinBlue asset contains the red color
+            return .BinRed
         case .yellow:
-            return .BinGreen // Fix: BinGreen asset contains the yellow color
+            return .BinYellow
         case .blue:
-            return .BinRed   // Fix: BinRed asset contains the blue color
+            return .BinBlue
         case .green:
-            return .BinYellow // Fix: BinYellow asset contains the green color
+            return .BinGreen
         }
     }
     

@@ -246,8 +246,9 @@ struct HomeView: View {
                 VStack(spacing: 8) {
                     ForEach(Array(sortedBreakdown), id: \.key) { type, count in
                         HStack(spacing: 8) {
-                            Text(type.icon)
+                            Image(systemName: type.icon)
                                 .font(.system(size: 16))
+                                .foregroundColor(type.color)
                             
                             Text(type.displayName)
                                 .bodySmallStyle()

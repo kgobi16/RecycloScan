@@ -222,8 +222,9 @@ struct CategoryRow: View {
                     .fill(type.color.opacity(0.15))
                     .frame(width: 44, height: 44)
                 
-                Text(type.icon)
+                Image(systemName: type.icon)
                     .font(.system(size: 20))
+                    .foregroundColor(type.color)
             }
             
             // Type name

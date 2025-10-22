@@ -532,7 +532,7 @@
 				CODE_SIGN_ENTITLEMENTS = RecycloScan/RecycloScan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P7PL5J4AMN;
+				DEVELOPMENT_TEAM = PKXJB6Y65A;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RecycloScan/Info.plist;
@@ -547,7 +547,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.Recyclo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -563,7 +563,7 @@
 				CODE_SIGN_ENTITLEMENTS = RecycloScan/RecycloScan.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P7PL5J4AMN;
+				DEVELOPMENT_TEAM = PKXJB6Y65A;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RecycloScan/Info.plist;
@@ -578,7 +578,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScan;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.Recyclo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -592,6 +592,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PKXJB6Y65A;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				MARKETING_VERSION = 1.0;
@@ -610,6 +611,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PKXJB6Y65A;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				MARKETING_VERSION = 1.0;
@@ -627,6 +629,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PKXJB6Y65A;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScanUITests;
@@ -643,6 +646,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PKXJB6Y65A;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScanUITests;
@@ -662,7 +666,7 @@
 				CODE_SIGN_ENTITLEMENTS = RecycloScanWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P7PL5J4AMN;
+				DEVELOPMENT_TEAM = PKXJB6Y65A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RecycloScanWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = RecycloScanWidget;
@@ -673,7 +677,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScan.RecycloScanWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.Recyclo.RecycloScanWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -690,7 +694,7 @@
 				CODE_SIGN_ENTITLEMENTS = RecycloScanWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P7PL5J4AMN;
+				DEVELOPMENT_TEAM = PKXJB6Y65A;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = RecycloScanWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = RecycloScanWidget;
@@ -701,7 +705,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.RecycloScan.RecycloScanWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.TlaitirangRathete.Recyclo.RecycloScanWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

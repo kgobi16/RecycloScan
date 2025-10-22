@@ -34,6 +34,9 @@ class RecyclingManager: ObservableObject {
         saveToUserDefaults()
         
         print("📦 Added \(type.displayName) to collection (pending: \(pendingItems.count))")
+        
+        // Update widget when new items are added
+        updateWidgetDataFromPickupScheduler()
     }
     
     // MARK: - Pickup Completion (Award Points)
@@ -59,6 +62,9 @@ class RecyclingManager: ObservableObject {
         saveToUserDefaults()
         
         print("🎉 Pickup completed! +\(pickupEvent.pointsAwarded) points for \(collectedItems.count) items")
+        
+        // Update widget with latest data
+        updateWidgetDataFromPickupScheduler()
     }
     
     // Record bin completion (called by Kobi's confirmBinsPutOut)
@@ -153,6 +159,25 @@ class RecyclingManager: ObservableObject {
             pointsThisWeek: getPointsThisWeek(),
             nextPickupDate: nextPickup?.date,
             nextPickupBinType: nextPickup?.binType.displayName,
+            lastUpdated: Date()
+        )
+        WidgetData.save(widgetData)
+        
+        // Tell widget to refresh
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
+    }
+    
+    // Internal method to update widget data by finding the pickup scheduler
+    private func updateWidgetDataFromPickupScheduler() {
+        // Try to get next pickup from pickup scheduler
+        // Since this is called from within RecyclingManager, we need to access it differently
+        // For now, just update with current points and let the app update pickup info
+        let widgetData = WidgetData(
+            pointsThisWeek: getPointsThisWeek(),
+            nextPickupDate: nil, // Will be updated by PickupSchedulerVM
+            nextPickupBinType: nil,
             lastUpdated: Date()
         )
         WidgetData.save(widgetData)

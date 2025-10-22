@@ -8,10 +8,20 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var recyclingManager = RecyclingManager()
-    @StateObject private var pickupScheduler = PickupSchedulerVM.sample
-    @StateObject private var notificationManager = NotificationManagerVM.sample
+    @StateObject private var recyclingManager: RecyclingManager
+    @StateObject private var pickupScheduler: PickupSchedulerVM
+    @StateObject private var notificationManager: NotificationManagerVM
     @State private var selectedTab = 0
+    
+    init() {
+        let recyclingManager = RecyclingManager()
+        let pickupScheduler = PickupSchedulerVM()
+        let notificationManager = NotificationManagerVM()
+        
+        self._recyclingManager = StateObject(wrappedValue: recyclingManager)
+        self._pickupScheduler = StateObject(wrappedValue: pickupScheduler)
+        self._notificationManager = StateObject(wrappedValue: notificationManager)
+    }
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -36,7 +46,7 @@ struct ContentView: View {
                 .tag(1)
             
             // Schedule Tab (Kobi's)
-            PickupAppointmentView(viewModel: pickupScheduler)
+            PickupAppointmentView(viewModel: pickupScheduler, recyclingManager: recyclingManager)
                 .tabItem {
                     Label("Schedule", systemImage: "calendar")
                 }
@@ -51,8 +61,11 @@ struct ContentView: View {
         }
         .accentColor(.ForestGreen)
         .onAppear {
-            // Connect the managers after views are loaded
+            // Connect all managers properly
             pickupScheduler.setRecyclingManager(recyclingManager)
+            pickupScheduler.setNotificationManager(notificationManager)
+            notificationManager.setPickupScheduler(pickupScheduler)
+            notificationManager.setRecyclingManager(recyclingManager)
             
             // Update widget data
             let nextPickup = pickupScheduler.getNextPickup()

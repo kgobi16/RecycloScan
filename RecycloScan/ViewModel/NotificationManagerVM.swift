@@ -90,10 +90,32 @@ class NotificationManagerVM: NSObject, ObservableObject {
             options: []
         )
         
+        // Actions for test notifications
+        let testYesAction = UNNotificationAction(
+            identifier: "TEST_YES",
+            title: "✅ Yes, it works!",
+            options: [.foreground]
+        )
+        
+        let testNoAction = UNNotificationAction(
+            identifier: "TEST_NO",
+            title: "❌ Not working",
+            options: []
+        )
+        
+        // Category for test notifications
+        let testNotificationCategory = UNNotificationCategory(
+            identifier: "TEST_NOTIFICATION",
+            actions: [testYesAction, testNoAction],
+            intentIdentifiers: [],
+            options: []
+        )
+        
         // Register categories
         UNUserNotificationCenter.current().setNotificationCategories([
             binReminderCategory,
-            weeklyTipCategory
+            weeklyTipCategory,
+            testNotificationCategory
         ])
         
         // Set delegate to handle responses
@@ -331,9 +353,9 @@ class NotificationManagerVM: NSObject, ObservableObject {
     
     /// Award points when user confirms they put out bins
     private func awardPointsForCompletion(binType: BinType) {
-        // Integration point for gamification
-        // recyclingManager?.awardBinCompletionPoints(for: binType)
-        print("🎉 Would award points for putting out \(binType.displayName)")
+        // Process pending items through RecyclingManager
+        recyclingManager?.recordBinCompletion(binTypes: [binType], date: Date())
+        print("🎉 Awarded points for putting out \(binType.displayName)")
     }
     
     // MARK: - Notification Queries
@@ -450,9 +472,13 @@ extension NotificationManagerVM: UNUserNotificationCenterDelegate {
                 if let binTypeString = userInfo["binType"] as? String,
                    let binType = BinType(rawValue: binTypeString) {
                     self.pickupScheduler?.recordBinCompletion(for: [binType], points: 10)
+                    
+                    // CRUCIAL: Process pending items in RecyclingManager
+                    // This converts pending scanned items to actual points
+                    self.recyclingManager?.recordBinCompletion(binTypes: [binType], date: Date())
                 }
             }
-            print("✅ User confirmed bin was put out")
+            print("✅ User confirmed bin was put out - processing pending items")
             
         case "BIN_NO":
             // User missed putting out the bin
@@ -466,6 +492,35 @@ extension NotificationManagerVM: UNUserNotificationCenterDelegate {
                 }
             }
             print("❌ User confirmed bin was missed")
+            
+        case "TEST_YES":
+            // User confirmed test notification works - award points like a real bin collection
+            DispatchQueue.main.async {
+                if let binTypeString = userInfo["binType"] as? String,
+                   let binType = BinType(rawValue: binTypeString) {
+                    
+                    // Add some sample items if there are no pending items (for testing purposes)
+                    if self.recyclingManager?.getPendingItemCount() == 0 {
+                        // Add a few sample items based on bin type
+                        self.recyclingManager?.addScannedItem(type: .plastic)
+                        self.recyclingManager?.addScannedItem(type: .paper)
+                        print("🧪 Added sample items for test notification")
+                    }
+                    
+                    // Record completion in pickup scheduler
+                    self.pickupScheduler?.recordBinCompletion(for: [binType], points: 10)
+                    
+                    // CRUCIAL: Process pending items in RecyclingManager
+                    // This converts pending scanned items to actual points
+                    self.recyclingManager?.recordBinCompletion(binTypes: [binType], date: Date())
+                    
+                    print("🎯 Test notification processed - awarded points for \(binType.displayName)")
+                }
+            }
+            
+        case "TEST_NO":
+            // User said test notification didn't work
+            print("❌ User reported test notification issue")
             
         case "TIP_DISMISS":
             // User acknowledged the tip

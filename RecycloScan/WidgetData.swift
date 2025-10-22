@@ -16,14 +16,14 @@ struct WidgetData: Codable {
     let lastUpdated: Date
     
     static func save(_ data: WidgetData) {
-        let defaults = UserDefaults(suiteName: "group.com.yourteam.recycloscan")
+        let defaults = UserDefaults(suiteName: "group.com.kgobi.recycloscan")
         if let encoded = try? JSONEncoder().encode(data) {
             defaults?.set(encoded, forKey: "widgetData")
         }
     }
     
     static func load() -> WidgetData? {
-        let defaults = UserDefaults(suiteName: "group.com.yourteam.recycloscan")
+        let defaults = UserDefaults(suiteName: "group.com.kgobi.recycloscan")
         guard let data = defaults?.data(forKey: "widgetData"),
               let decoded = try? JSONDecoder().decode(WidgetData.self, from: data) else {
             return nil

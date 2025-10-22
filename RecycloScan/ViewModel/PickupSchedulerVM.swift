@@ -14,6 +14,9 @@
 
 import Foundation
 import SwiftUI
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 // Statistics tracking for individual bin types
 struct BinStats: Codable {
@@ -90,6 +93,9 @@ class PickupSchedulerVM: ObservableObject {
         
         // Reschedule notifications when schedule changes
         scheduleNotifications()
+        
+        // Update widget with new schedule
+        updateWidget()
     }
     
     // Toggle bin schedule on/off
@@ -373,5 +379,23 @@ extension PickupSchedulerVM {
     
     static var empty: PickupSchedulerVM {
         return PickupSchedulerVM()
+    }
+    
+    // MARK: - Widget Updates
+    
+    private func updateWidget() {
+        let nextPickup = getNextPickup()
+        let widgetData = WidgetData(
+            pointsThisWeek: 0, // Will be updated by RecyclingManager
+            nextPickupDate: nextPickup?.date,
+            nextPickupBinType: nextPickup?.binType.displayName,
+            lastUpdated: Date()
+        )
+        WidgetData.save(widgetData)
+        
+        // Tell widget to refresh
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
     }
 }

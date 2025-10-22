@@ -24,18 +24,22 @@ class RecyclingManager: ObservableObject {
         loadFromUserDefaults()
     }
     
-    // MARK: - Scanning (Count Only, No Points)
     
-    // Add scanned item to pending collection
-    // Called by Ariel's WasteScannerView after classification
+    // MARK: - Scanning (Add item + award scan points)
     func addScannedItem(type: RecyclableType) {
+        // 1️⃣ Create a new recyclable item
         let item = RecyclableItem(type: type)
         pendingItems.append(item)
-        saveToUserDefaults()
         
-        print("📦 Added \(type.displayName) to collection (pending: \(pendingItems.count))")
+        // 2️⃣ Award immediate points for successful scan
+        totalPoints += type.pointValue
+        
+        // 3️⃣ Save updated data
+        saveToUserDefaults()
+
     }
-    
+        
+        
     // MARK: - Pickup Completion (Award Points)
     
     // Complete pickup and award points
@@ -61,17 +65,16 @@ class RecyclingManager: ObservableObject {
         print("🎉 Pickup completed! +\(pickupEvent.pointsAwarded) points for \(collectedItems.count) items")
     }
     
-    // Record bin completion (called by Kobi's confirmBinsPutOut)
-    // This is for when bins are put out, but items haven't been scanned yet
-    // Will extend this later to award bonus points for putting bins out on time
+    
+    // MARK: - Bin Completion (User confirmed put out)
     func recordBinCompletion(binTypes: [BinType], date: Date) {
-        // trigger pickup completion if there are pending items
         if !pendingItems.isEmpty {
             completePickup(pickupDate: date)
+        } else {
+            print("⚠️ No recyclables pending for pickup.")
         }
-        
-        print("🗑️ Bins recorded: \(binTypes.map { $0.displayName }.joined(separator: ", "))")
     }
+
     
     // Remove item from pending collection
     func removePendingItem(_ item: RecyclableItem) {

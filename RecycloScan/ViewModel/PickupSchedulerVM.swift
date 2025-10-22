@@ -224,18 +224,21 @@ class PickupSchedulerVM: ObservableObject {
         return binCompletionStats.mapValues { $0.currentStreak }
     }
     
-    //Integration with RecyclingManager Will update when Yu finshes her section
-    
-    //Confirm that bins were put out (for gamification)
+    //Integration with RecyclingManager
+    //Confirm user put out bins
     func confirmBinsPutOut(for binTypes: [BinType], on date: Date) {
-        // Record completion in statistics
-        recordBinCompletion(for: binTypes, points: 10)
-        
-        print("✅ Bins put out: \(binTypes.map { $0.displayName }.joined(separator: ", "))")
-        
-        // integration with RecyclingManager for points
+        // Just track user behavior (for streaks / stats)
+        for binType in binTypes {
+            binCompletionStats[binType]?.recordCompletion(points: 0)
+        }
+        saveBinStats()
+
+        // Notify RecyclingManager to process actual pickup when ready
         recyclingManager?.recordBinCompletion(binTypes: binTypes, date: date)
+
+        print("Bins put out confirmed: \(binTypes.map { $0.displayName }.joined(separator: ", "))")
     }
+
     
     //Set the RecyclingManager reference for gamification
     public func setRecyclingManager(_ manager: RecyclingManager) {

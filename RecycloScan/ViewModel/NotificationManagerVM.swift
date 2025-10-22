@@ -242,9 +242,14 @@ class NotificationManagerVM: NSObject, ObservableObject {
         content.sound = .default
         
         // Enhanced body message with bin status prompt
+        //if notification.type == .binReminder, let binType = notification.binType {
+            //content.body = "\(notification.message)\n\nTap to confirm if you put your bin outside."
+            //content.categoryIdentifier = "BIN_REMINDER"
+            
         if notification.type == .binReminder, let binType = notification.binType {
-            content.body = "\(notification.message)\n\nTap to confirm if you put your bin outside."
+            content.body = "\(notification.message)\n\nTap to confirm if you put out your \(binType.displayName.lowercased()) bin."
             content.categoryIdentifier = "BIN_REMINDER"
+        
         } else {
             content.body = notification.message
             content.categoryIdentifier = "WEEKLY_TIP"
